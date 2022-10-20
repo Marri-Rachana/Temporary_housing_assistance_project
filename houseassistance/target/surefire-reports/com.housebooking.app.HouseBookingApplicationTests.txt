@@ -1,0 +1,10 @@
+-------------------------------------------------------------------------------
+Test set: com.housebooking.app.HouseBookingApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 7.869 s <<< FAILURE! - in com.housebooking.app.HouseBookingApplicationTests
+contextLoads  Time elapsed: 0.003 s  <<< ERROR!
+java.lang.IllegalStateException: Failed to load ApplicationContext
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jdbcSessionDataSourceScriptDatabaseInitializer' defined in class path resource [org/springframework/boot/autoconfigure/session/JdbcSessionConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.boot.autoconfigure.session.JdbcSessionDataSourceScriptDatabaseInitializer]: Factory method 'jdbcSessionDataSourceScriptDatabaseInitializer' threw exception; nested exception is java.lang.IllegalStateException: Unable to detect database type
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.boot.autoconfigure.session.JdbcSessionDataSourceScriptDatabaseInitializer]: Factory method 'jdbcSessionDataSourceScriptDatabaseInitializer' threw exception; nested exception is java.lang.IllegalStateException: Unable to detect database type
+Caused by: java.lang.IllegalStateException: Unable to detect database type
+

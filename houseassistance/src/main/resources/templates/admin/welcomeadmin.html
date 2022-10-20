@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Dashboard</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+ </head>
+<body>
+<nav class="navbar navbar-expand-lg bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/" style="color:white">Temporary Housing Assistance</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!-- <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li> -->
+      </ul>
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success me-2" type="submit">Search</button>  
+        <button class="btn btn-primary me-2"><a href="/login" style="color:white;text-decoration:none">Logout</a></button>
+      </form>
+    </div>
+  </div>
+</nav><br>
+<div class="container">
+  <h2 style="color:blue"> <p th:text="${username}"></p></h2>
+  <br>
+  
+  <div class="row">
+	  <div class="card" style="width: 15rem;margin-right:20px;">
+		  <img class="card-img-top" src="assets/spam.jpg" alt="Card image">
+		  <div class="card-body">
+		    <h4 class="card-title">Spam Users</h4>
+		    <p class="card-text">Reported By House Owner</p>
+		    <a href="#" class="btn btn-primary">See Results</a>
+		  </div>
+  	  </div>
+  	  
+  	  <div class="card" style="width:15rem;margin-right:20px;">
+		  <img class="card-img-top" src="assets/spam.jpg" alt="Card image">
+		  <div class="card-body">
+		    <h4 class="card-title">Spam Houses</h4>
+		    <p class="card-text">Reported By Users</p>
+		    <a href="#" class="btn btn-primary">See Results</a>
+		  </div>
+  	  </div>
+  	  
+  	  <div class="card" style="width: 15rem;margin-right:20px;">
+		  <img class="card-img-top" src="assets/notifications.jpg" alt="Card image">
+		  <div class="card-body">
+		    <h4 class="card-title">Post Notifications</h4>
+		    <p class="card-text">for Users</p>
+		    <a href="/notification" class="btn btn-primary">Create Now</a>
+		  </div>
+  	  </div>
+  	  
+  	  <div class="card" style="width: 15rem;margin-right:20px;">
+		  <img class="card-img-top" src="assets/announcements.png" alt="Card image">
+		  <div class="card-body">
+		    <h4 class="card-title">Post Announcements</h4>
+		    <p class="card-text">for Users</p>
+		    <a href="/announcement" class="btn btn-primary">Create Now</a>
+		  </div>
+  	  </div>
+  	  
+  	  <div class="card" style="width: 15rem;margin-right:20px;margin-top:20px;">
+		  <img class="card-img-top" src="assets/tickets.png" alt="Card image">
+		  <div class="card-body">
+		    <h4 class="card-title">Resolve Tickets</h4>
+		    <p class="card-text">Raised by Users and House Owners</p>
+		    <a href="#" class="btn btn-primary">Resolve Now</a>
+		  </div>
+  	  </div>
+  	  
+  	  <div class="card" style="width: 15rem;margin-right:20px;margin-top:20px;">
+		  <img class="card-img-top" src="assets/faq.jpg" alt="Card image">
+		  <div class="card-body">
+		    <h4 class="card-title">Update FAQ'S</h4>
+		    <p class="card-text">all FAQ'S</p>
+		    <a href="#" class="btn btn-primary">Update Now</a>
+		  </div>
+  	  </div>
+  </div>
+</div>
+
+ <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
