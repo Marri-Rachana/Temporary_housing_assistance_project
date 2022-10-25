@@ -26,7 +26,10 @@ public class HomeController {
 	
 	@Autowired
 	private HomeService homeService;
-	
+
+	@Autowired
+	private UserModel usermodel;
+
 	@GetMapping("/")
 	public String getHome(Model model)
 	{
@@ -34,16 +37,14 @@ public class HomeController {
 	}
 	
 	@GetMapping("/register")
-	public String getRegister(Model model)
+	public String getRegisterationPage(Model model)
 	{
-		
-		UserModel usermodel = new UserModel();
 		model.addAttribute("user", usermodel);
 		return "home/register";
 	}
 	
 	@PostMapping("/saveUser")
-	public String saveHouseBooking(@ModelAttribute("user") UserModel user)
+	public String saveUser(@ModelAttribute("user") UserModel user)
 	{
 		System.out.println("save===user");
 		user.setUsername(user.getFirstname()+user.getLastname());
@@ -62,7 +63,6 @@ public class HomeController {
 			messages = new ArrayList<>();
 		}
 		model.addAttribute("sessionMessages", messages);
-		UserModel usermodel = new UserModel();
 		model.addAttribute("user", usermodel);
 		return "home/login";
 	}
@@ -116,7 +116,6 @@ public class HomeController {
 	@GetMapping("/forgotUsername")
 	public String getForgotUsernamePage(Model model)
 	{
-		UserModel usermodel = new UserModel();
 		model.addAttribute("user", usermodel);
 		return "home/forgotusername";
 	}
@@ -124,7 +123,6 @@ public class HomeController {
 	@GetMapping("/forgotPassword")
 	public String getForgotPasswordPage(Model model)
 	{
-		UserModel usermodel = new UserModel();
 		model.addAttribute("user", usermodel);
 		return "home/forgotpassword";
 	}
@@ -163,15 +161,12 @@ public class HomeController {
 			email=userModel.getEmail();
 			System.out.println("email ***** "+email);
 			System.out.println(userModel);
-//			UserModel usermodel = new UserModel();
 			model.addAttribute("user", userModel);
 			model.addAttribute("email",email);
-//			redirectAttrs.addFlashAttribute("email", email);
-//			return "redirect:/changePassword";
 			return "home/changepassword";
 		}
 		else {
-			model.addAttribute("errormsg", "Invalid Login Credentials. Please try again.");
+			model.addAttribute("errormsg", "Can't reset Your Password - Invalid Email/Security answers Entered");
 			return "home/error";
 		}
 		
@@ -181,7 +176,6 @@ public class HomeController {
 	@GetMapping("/changePassword")
 	public String getChangePasswordPage(Model model)
 	{
-		UserModel usermodel = new UserModel();
 		model.addAttribute("user", usermodel);
 		return "home/changepassword";
 	}
@@ -240,9 +234,9 @@ public class HomeController {
 		model.addAttribute("user", userdata);
 		
 		return "home/resetpassword";
-		
-		
-		
+
+
+
 	}
 	
 
