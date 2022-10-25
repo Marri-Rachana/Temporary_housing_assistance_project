@@ -91,6 +91,11 @@ public class HomeService {
 
 	}
 
+	public List<UserModel> getAllStudents() {
+		// TODO Auto-generated method stub
+		return homeRepo.findAllStudents();
+	}
+
 
 
 }
