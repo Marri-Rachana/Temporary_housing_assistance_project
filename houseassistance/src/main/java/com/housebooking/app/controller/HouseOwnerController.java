@@ -35,6 +35,9 @@ public class HouseOwnerController {
 	
 	@Autowired
 	private HouseOwnerService houseOwnerService;
+
+	@Autowired
+	private ReportModel report;
 	
 	@GetMapping("/houseowner")
 	public String getHouseOwnerWelcomePage(@ModelAttribute("user") UserModel user, Model model, HttpSession session)
@@ -160,7 +163,6 @@ public class HouseOwnerController {
 		UserModel userdata = homeService.findUser(messages.get(0));
 		List<UserModel> students = homeService.getAllStudents();
 		model.addAttribute("students", students);
-		ReportModel report = new ReportModel();
 		model.addAttribute("report", report);
 		model.addAttribute("role", userdata.getUsertype());
 

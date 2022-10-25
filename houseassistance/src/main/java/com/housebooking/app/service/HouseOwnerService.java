@@ -1,7 +1,9 @@
 package com.housebooking.app.service;
 
 import com.housebooking.app.dao.HouseRepo;
+import com.housebooking.app.dao.ReportRepo;
 import com.housebooking.app.model.HouseModel;
+import com.housebooking.app.model.ReportModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -10,6 +12,9 @@ public class HouseOwnerService {
 
     @Autowired
     private HouseRepo houseRepo;
+
+    @Autowired
+    private ReportRepo reportRepo;
     public void saveHouse(HouseModel house) {
 
         houseRepo.save(house);
@@ -33,6 +38,11 @@ public class HouseOwnerService {
     public void deleteHouse(Long id) {
         // TODO Auto-generated method stub
         houseRepo.deleteById(id);
+    }
+
+    public void saveReport(ReportModel report) {
+        // TODO Auto-generated method stub
+        reportRepo.save(report);
     }
 
 }
