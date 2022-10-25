@@ -22,4 +22,17 @@ public class HouseOwnerService {
         return houses;
     }
 
+    public HouseModel getHouseById(Long id) {
+        // TODO Auto-generated method stub
+
+        HouseModel house = houseRepo.findHouseById(id);
+        System.out.println(house.getHouseAddress());
+        return house;
+    }
+
+    public void deleteHouse(Long id) {
+        // TODO Auto-generated method stub
+        houseRepo.deleteById(id);
+    }
+
 }
