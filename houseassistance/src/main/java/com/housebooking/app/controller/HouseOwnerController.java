@@ -31,6 +31,9 @@ import com.housebooking.app.utils.FileUploadUtil;
 public class HouseOwnerController {
 	@Autowired
 	private HomeService homeService;
+
+	@Autowired
+	private HouseModel house;
 	
 	@Autowired
 	private HouseOwnerService houseOwnerService;
@@ -47,16 +50,12 @@ public class HouseOwnerController {
         model.addAttribute("sessionMessages", messages);
         UserModel userdata = homeService.findUser(messages.get(0));
         model.addAttribute("role", userdata.getUsertype());
-//        String base64EncodedImage = Base64.getEncoder().encodeToString(houseOwnerService.getHouse().getHousePhoto());
-//        model.addAttribute("image", base64EncodedImage);
-//        System.out.println(base64EncodedImage);
 		return "houseowner/welcomehouseowner";
 	}
 	
 	@GetMapping("/createHouse")
 	public String createHouse(Model model, HttpSession session) {
-		
-		HouseModel house = new HouseModel();
+
 		model.addAttribute("house", house);
 		@SuppressWarnings("unchecked")
         List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
