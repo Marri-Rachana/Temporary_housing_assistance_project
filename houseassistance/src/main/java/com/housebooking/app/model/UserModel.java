@@ -23,6 +23,7 @@ public class UserModel {
 	private String mobileNo;
 	private String password;
 	private String usertype;
+	private String username;
 	private String securityQuestion;
 	private String securityAnswer;
 
@@ -79,6 +80,12 @@ public class UserModel {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String toString(){ 
 		  return firstname+" "+lastname+" "+email+" "+mobileNo+" "+usertype+" "+securityQuestion+" "+securityAnswer;  
