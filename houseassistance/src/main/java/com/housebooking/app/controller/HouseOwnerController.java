@@ -38,6 +38,9 @@ public class HouseOwnerController {
 
 	@Autowired
 	private ReportModel report;
+
+	@Autowired
+	private ReviewModel review;
 	
 	@GetMapping("/houseowner")
 	public String getHouseOwnerWelcomePage(@ModelAttribute("user") UserModel user, Model model, HttpSession session)
@@ -192,7 +195,6 @@ public class HouseOwnerController {
 			return "home/error";
 		}
 		UserModel userdata = homeService.findUser(messages.get(0));
-		ReviewModel review = new ReviewModel();
 		model.addAttribute("review", review);
 		model.addAttribute("role", userdata.getUsertype());
 
