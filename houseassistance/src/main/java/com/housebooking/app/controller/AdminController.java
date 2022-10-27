@@ -52,7 +52,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/postAnnouncement")
-	public String postNotification(@ModelAttribute("announcement") Announcement announcement) {
+	public String postAnnouncement(@ModelAttribute("announcement") Announcement announcement) {
 
 		adminService.addAnnouncement(announcement);
 

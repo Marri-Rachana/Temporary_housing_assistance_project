@@ -23,7 +23,20 @@ import com.housebooking.app.service.HomeService;
 
 @Controller
 public class HomeController {
-	
+
+	public enum UserType{
+		HOME_OWNER("houseowner"),STUDENT("student"),ADMIN("admin");
+		private String name;
+		private UserType(String name){
+			this.name = name;
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+
+	}
 	@Autowired
 	private HomeService homeService;
 
@@ -83,14 +96,14 @@ public class HomeController {
 				messages = new ArrayList<>();
 				request.getSession().setAttribute("MY_SESSION_MESSAGES", messages);
 			}
-			if(userModel.getUsertype().equals("houseowner")) {
+			if(userModel.getUsertype().equals(UserType.HOME_OWNER.getName())) {
 				username=userModel.getEmail().split("@")[0].toString().toUpperCase();
 				useremail=userModel.getEmail();
 				messages.add(useremail);
 				request.getSession().setAttribute("MY_SESSION_MESSAGES", messages);
 				return "redirect:/houseowner";
 			} 
-			else if(userModel.getUsertype().equals("student")) {
+			else if(userModel.getUsertype().equals(UserType.STUDENT.getName())) {
 				username=userModel.getEmail().split("@")[0].toString().toUpperCase();
 				useremail=userModel.getEmail();
 				messages.add(useremail);
