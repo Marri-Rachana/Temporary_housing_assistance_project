@@ -5,11 +5,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.housebooking.app.model.TicketModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.housebooking.app.model.Announcement;
@@ -56,6 +58,23 @@ public class AdminController {
 
 		adminService.addAnnouncement(announcement);
 
+		return "redirect:/admin";
+
+	}
+
+	@GetMapping("/viewTickets")
+	public String viewTickets(Model model) {
+
+		List<TicketModel> tickets = adminService.findAllTickets();
+		model.addAttribute("tickets",tickets);
+		return "admin/viewtickets";
+
+	}
+
+	@GetMapping("/removeTicket/{id}")
+	public String removeTicket(Model model, @PathVariable("id") Long id) {
+		System.out.println("id==== "+id);
+		adminService.removeTicket(id);
 		return "redirect:/admin";
 
 	}
