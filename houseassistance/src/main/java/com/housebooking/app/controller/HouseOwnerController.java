@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.housebooking.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.housebooking.app.model.HouseModel;
-import com.housebooking.app.model.ReportModel;
-import com.housebooking.app.model.ReviewModel;
-import com.housebooking.app.model.UserModel;
 import com.housebooking.app.service.HomeService;
 import com.housebooking.app.service.HouseOwnerService;
 import com.housebooking.app.utils.FileUploadUtil;
@@ -41,6 +38,9 @@ public class HouseOwnerController {
 
 	@Autowired
 	private ReviewModel review;
+
+	@Autowired
+	private TicketModel ticket;
 	
 	@GetMapping("/houseowner")
 	public String getHouseOwnerWelcomePage(@ModelAttribute("user") UserModel user, Model model, HttpSession session)
@@ -209,6 +209,43 @@ public class HouseOwnerController {
 
 		houseOwnerService.saveReview(review);
 		
+		return "redirect:/houseowner";
+	}
+
+	@GetMapping("/ticket")
+	public String ticket(Model model, HttpSession session) {
+
+
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		model.addAttribute("ticket", ticket);
+		model.addAttribute("userMail", userdata.getEmail());
+		model.addAttribute("role", userdata.getUsertype());
+
+		return "houseowner/raiseticket";
+	}
+
+	@PostMapping("/raiseTicket")
+	public String raiseTicket(@ModelAttribute("ticket") TicketModel ticket, HttpSession session, Model model )
+	{
+		System.out.println("raised Ticket");
+
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		ticket.setUserMail(userdata.getEmail());
+
+		houseOwnerService.saveTicket(ticket);
+
 		return "redirect:/houseowner";
 	}
 }
