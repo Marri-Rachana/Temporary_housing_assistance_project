@@ -1,12 +1,9 @@
 package com.housebooking.app.service;
 
-import com.housebooking.app.dao.AnnouncementRepo;
-import com.housebooking.app.dao.TicketRepo;
-import com.housebooking.app.model.Announcement;
-import com.housebooking.app.model.TicketModel;
+import com.housebooking.app.dao.*;
+import com.housebooking.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.housebooking.app.dao.FAQRepo;
-import com.housebooking.app.model.FAQModel;
+
 import java.util.List;
 
 import java.util.List;
@@ -17,10 +14,19 @@ public class AdminService {
 	private AnnouncementRepo announcementRepo;
 
 	@Autowired
+	private ReportRepo reportRepo;
+
+	@Autowired
 	private TicketRepo ticketRepo;
   
   @Autowired
 	private FAQRepo faqRepo;
+
+  @Autowired
+  private HomeRepo homeRepo;
+
+  @Autowired
+  private HouseRepo houseRepo;
 
 	public String addAnnouncement(Announcement announcement) {
 
@@ -52,6 +58,34 @@ public class AdminService {
 
 	public void removeTicket(Long id) {
 		ticketRepo.deleteById(id);
+	}
+
+	public List<ReportModel> findAllStudentReports() {
+		// TODO Auto-generated method stub
+		List<ReportModel> reports = reportRepo.findAllByStudentType();
+		return reports;
+	}
+	public void removeStudent(Long id) {
+		// TODO Auto-generated method stub
+		ReportModel report = reportRepo.findReportById(id);
+		System.out.println("report mail==== "+report.getUserMail());
+		UserModel user = homeRepo.findbyEmail(report.getUserMail());
+		homeRepo.deleteById(user.getId());
+		reportRepo.deleteById(id);
+
+
+	}
+
+	public List<ReportModel> findAllHousesReports() {
+		List<ReportModel> reports = reportRepo.findAllByOwnerType();
+		return reports;
+	}
+
+	public void removeHouse(Long id) {
+		ReportModel report = reportRepo.findReportById(id);
+		HouseModel house = houseRepo.findbyHouseName(report.getHouseName());
+		houseRepo.deleteById(house.getId());
+		reportRepo.deleteById(id);
 	}
 
 }

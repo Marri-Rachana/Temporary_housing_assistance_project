@@ -5,8 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import com.housebooking.app.model.FAQModel;
-import com.housebooking.app.model.TicketModel;
+import com.housebooking.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.housebooking.app.model.Announcement;
-import com.housebooking.app.model.UserModel;
 import com.housebooking.app.service.AdminService;
 import com.housebooking.app.service.HomeService;
 
@@ -128,6 +125,40 @@ public class AdminController {
 
 		adminService.addFaq(faq);
 
+		return "redirect:/admin";
+
+	}
+
+	@GetMapping("/spamStudents")
+	public String getSpamStudents(Model model) {
+
+		List<ReportModel> studentReports = adminService.findAllStudentReports();
+		model.addAttribute("reports", studentReports);
+		return "admin/spamstudents";
+
+	}
+
+	@GetMapping("/removeStudent/{id}")
+	public String removeSpamStudents(Model model, @PathVariable("id") Long id) {
+		System.out.println("id==== "+id);
+		adminService.removeStudent(id);
+		return "redirect:/admin";
+
+	}
+
+	@GetMapping("/spamHouses")
+	public String getSpamHouses(Model model) {
+
+		List<ReportModel> houseReports = adminService.findAllHousesReports();
+		model.addAttribute("reports", houseReports);
+		return "admin/spamowners";
+
+	}
+
+	@GetMapping("/removeHouse/{id}")
+	public String removeSpamHouses(Model model, @PathVariable("id") Long id) {
+
+		adminService.removeHouse(id);
 		return "redirect:/admin";
 
 	}

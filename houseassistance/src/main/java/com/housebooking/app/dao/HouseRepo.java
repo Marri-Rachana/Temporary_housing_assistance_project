@@ -13,4 +13,7 @@ public interface HouseRepo extends JpaRepository<HouseModel, Long>{
 
 	@Query( value = "select * from houses where id = :id", nativeQuery = true)
 	HouseModel findHouseById(Long id);
+
+	@Query( value = "select * from houses where house_name = :houseName", nativeQuery = true)
+	HouseModel findbyHouseName(String houseName);
 }
