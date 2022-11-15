@@ -40,7 +40,7 @@
      <input type="text" class="form-control" placeholder="Enter lastname"  th:field="*{lastname}" required/>
     </div><br>
     <div class="form-group">
-     <input type="number" class="form-control" placeholder="Enter mobileNo"  th:field="*{mobileNo}" maxlength="10" required/> 
+     <input type="number" class="form-control" placeholder="Enter mobileNo"  name="mobileno"  maxlength="10" required/>
     </div><br>
     <div class="form-group">
      <input type="email" class="form-control" placeholder="Enter email"  th:field="*{email}" required/>
@@ -48,15 +48,23 @@
     <div class="form-group">
       <input type="password" class="form-control" placeholder="Enter password"  th:field="*{password}" required/>
     </div><br>
+
     <div class="form-group">
-     <select th:field="*{usertype}" class="form-control">
+      <textarea class="form-control" placeholder="Enter Address" name="address" required></textarea>
+    </div><br>
+
+    <div class="form-group">
+      <input type="number" class="form-control" placeholder="Enter Age"  name="age" required/>
+    </div><br>
+    <div class="form-group">
+     <select th:field="*{usertype}" class="form-control" required>
      <option th:value="null">Select User</option>
     <option th:value="houseowner">House Owner (HO)</option>
     <option th:value="student">Student</option>
     </select>
     </div><br>
     <div class="form-group">
-    <select th:field="*{securityQuestion}" class="form-control">
+    <select th:field="*{securityQuestion}" class="form-control" required>
      <option th:value="null">Select your Security Question</option>
     <option th:value="birthlocation">Where is your birth location</option>
     <option th:value="god">Who is your favorite God</option>
@@ -64,7 +72,7 @@
     </select>
     </div><br>
     <div class="form-group">
-     <input type="text" class="form-control" placeholder="Enter Security Answer"  th:field="*{securityAnswer}"/>
+     <input type="text" class="form-control" placeholder="Enter Security Answer"  th:field="*{securityAnswer}" required/>
     </div><br>
     <button type="submit" class="btn btn-primary">Register</button>
   </form>
