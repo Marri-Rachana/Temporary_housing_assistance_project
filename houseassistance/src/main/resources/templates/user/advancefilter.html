@@ -66,7 +66,71 @@
     </div>
   </div>
 </nav><br>
+
+
 <div class="container">
+  <br>
+  <form action="#" th:action=@{/applyAdvanceFilters} method="post">
+  <div class="row mb-3">
+  <div class="col-md-4">
+    <label class="form-label">City</label>
+   	<select name="city" class="form-control">
+	    <option th:value="null">Select</option>
+	    <option th:value="hyderabad">Hyderabad</option>
+	    <option th:value="banglore">Banglore</option>
+	    <option th:value="chennai">Chennai</option>
+	    <option th:value="pune">Pune</option>
+	    <option th:value="mumbai">Mumbai</option>
+	    <option th:value="cochin">Cochin</option>
+	    <option th:value="kolkata">Kolkata</option>
+	    <option th:value="vijayawada">Vijayawada</option>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label for="inputState" class="form-label">Move-In Date</label>
+    <input type="date" class="form-control" name ="moveInDate" required/>
+  </div>
+   <div class="col-md-4">
+    <label class="form-label">House Type</label>
+   	<select name="houseType" class="form-control">
+    <option th:value="null">Select House Type</option>
+    <option th:value="1bhk">1BHK</option>
+    <option th:value="2bhk">2BHK</option>
+    <option th:value="1bhk">3BHK</option>
+    <option th:value="2bhk">4BHK</option>
+    </select>
+  </div>
+  </div>
+   <div class="row mb-3">
+    <div class="col-md-4">
+    <label class="form-label">Parking slot Availability</label>
+   	<select name="parking" class="form-control">
+	    <option th:value="null">select</option>
+     <option th:value="yes">yes</option>
+     <option th:value="no">no</option>
+    </select>
+  </div>
+  <div class="col-md-4">
+  <label class="form-label">Pet Friendly</label>
+    <select name="petFriendly" class="form-control">
+	    <option th:value="null">select</option>
+     <option th:value="yes">yes</option>
+     <option th:value="no">no</option>
+    </select>
+  </div>
+   <div class="col-md-4">
+   <label class="form-label">Lawn Availability</label>
+   <select name="lawn" class="form-control">
+	    <option th:value="null">select</option>
+     <option th:value="yes">yes</option>
+     <option th:value="no">no</option>
+    </select>
+  </div>
+  </div>
+  <div class="col-md-4">
+   <button type="submit" class="btn btn-primary">Apply Advanced Filters</button>
+  </div>
+</form><hr>
   <br>
   <div class="row">
 
