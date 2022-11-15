@@ -1,20 +1,39 @@
 package com.housebooking.app.controller;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
-import com.housebooking.app.model.TicketModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.housebooking.app.model.Announcement;
+import com.housebooking.app.model.AppointmentModel;
+import com.housebooking.app.model.FAQModel;
+import com.housebooking.app.model.HouseModel;
+import com.housebooking.app.model.MessageModel;
+import com.housebooking.app.model.ReportModel;
+import com.housebooking.app.model.ReserveModel;
+import com.housebooking.app.model.ReviewModel;
+import com.housebooking.app.model.ReviewOwnerModel;
+import com.housebooking.app.model.TicketModel;
 import com.housebooking.app.model.UserModel;
+import com.housebooking.app.service.AdminService;
 import com.housebooking.app.service.HomeService;
 import com.housebooking.app.service.HouseOwnerService;
-import org.springframework.web.bind.annotation.PostMapping;
+import com.housebooking.app.service.UserService;
+
 
 
 @Controller
@@ -23,63 +42,141 @@ public class UserController {
 	private HomeService homeService;
 
 	@Autowired
+	private UserService userService;
+
+	@Autowired
 	private HouseOwnerService houseOwnerService;
 
 	@Autowired
-	private TicketModel ticket;
-	
+	private AdminService adminService;
+
+	@Autowired
+	private ReserveModel reserve;
+
+	@Autowired
+	private AppointmentModel appointment;
+
+    @Autowired
+	private ReviewOwnerModel review;
+
 	@GetMapping("/user")
 	public String getUserWelcomePage(@ModelAttribute("user") UserModel user, Model model, HttpSession session)
 	{
 		@SuppressWarnings("unchecked")
         List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
 
-        if (messages == null) {
-            messages = new ArrayList<>();
-        }
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
         model.addAttribute("sessionMessages", messages);
         UserModel userdata = homeService.findUser(messages.get(0));
         model.addAttribute("role", userdata.getUsertype());
 //        String base64EncodedImage = Base64.getEncoder().encodeToString(houseOwnerService.getHouse().getHousePhoto());
 //        model.addAttribute("image", base64EncodedImage);
 //        System.out.println(base64EncodedImage);
+        List<HouseModel> houses = userService.getAllHouses();
+        model.addAttribute("houses", houses);
 		return "user/welcomeuser";
 	}
 
-	@GetMapping("/ticketraise")
-	public String ticket(Model model, HttpSession session) {
-
-
+	@GetMapping("/reserve/{id}")
+	public String reserve(@PathVariable(name="id") Long id, Model model, HttpSession session)
+	{
 		@SuppressWarnings("unchecked")
-		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
 		if(messages == null) {
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-		UserModel userdata = homeService.findUser(messages.get(0));
-		model.addAttribute("ticket", ticket);
-		model.addAttribute("userMail", userdata.getEmail());
-		model.addAttribute("role", userdata.getUsertype());
-
-		return "user/raiseticket";
+        model.addAttribute("sessionMessages", messages);
+        UserModel userdata = homeService.findUser(messages.get(0));
+        model.addAttribute("role", userdata.getUsertype());
+        model.addAttribute("houseid", id);
+        model.addAttribute("reserve", reserve);
+		return "user/reservehouse";
 	}
 
-	@PostMapping("/ticketRaise")
-	public String raiseTicket(@ModelAttribute("ticket") TicketModel ticket, HttpSession session, Model model )
+	@GetMapping("/appointment/{id}")
+	public String appointment(@PathVariable(name="id") Long id, Model model, HttpSession session)
 	{
-		System.out.println("raised Ticket");
-
 		@SuppressWarnings("unchecked")
-		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
 		if(messages == null) {
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-		UserModel userdata = homeService.findUser(messages.get(0));
-		ticket.setUserMail(userdata.getEmail());
+        model.addAttribute("sessionMessages", messages);
+        UserModel userdata = homeService.findUser(messages.get(0));
+        model.addAttribute("role", userdata.getUsertype());
+        model.addAttribute("houseid", id);
+        model.addAttribute("appointment", appointment);
+		return "user/appointment";
+	}
 
-		houseOwnerService.saveTicket(ticket);
+	@PostMapping("/bookAppointment")
+	public String bookAppointment(@RequestParam("houseid") Long houseid,@ModelAttribute("appointment") AppointmentModel appointment, Model model, HttpSession session) {
 
-		return "redirect:/user";
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        UserModel userdata = homeService.findUser(messages.get(0));
+
+        HouseModel house = houseOwnerService.getHouseById(houseid);
+
+        appointment.setHouseId(houseid.toString());
+        appointment.setHouseDetails(house.getHouseDetails());
+
+        appointment.setUserId(userdata.getId().toString());
+
+        userService.saveAppointment(appointment);
+        return "redirect:/user";
+
+	}
+
+	@PostMapping("/reserveHouse")
+	public String reserveHouse( HttpSession session, Model model,
+			@ModelAttribute("reserve") ReserveModel reserve,
+			@RequestParam("doc1") MultipartFile file1,
+			@RequestParam("doc2") MultipartFile file2,
+			@RequestParam("houseid") String houseid) {
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        UserModel userdata = homeService.findUser(messages.get(0));
+
+        reserve.setHouseId(houseid);
+        reserve.setUserId(userdata.getId().toString());
+
+        try {
+        	reserve.setDocument1(Base64.getEncoder().encodeToString(file1.getBytes()));
+			reserve.setDocument2(Base64.getEncoder().encodeToString(file2.getBytes()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        int result = userService.saveReserveHouse(reserve);
+
+        if(result == 1)
+        {
+        	return "redirect:/user";
+        } else {
+        	model.addAttribute("errormsg", "Invalid Coupon");
+			return "home/error";
+        }
+
 	}
 }
