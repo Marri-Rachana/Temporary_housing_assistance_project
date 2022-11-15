@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.housebooking.app.model.FAQModel;
 import com.housebooking.app.model.TicketModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -75,6 +76,58 @@ public class AdminController {
 	public String removeTicket(Model model, @PathVariable("id") Long id) {
 		System.out.println("id==== "+id);
 		adminService.removeTicket(id);
+		return "redirect:/admin";
+
+	}
+
+	@GetMapping("/faqs")
+	public String getFaqPage(Model model) {
+		return "admin/faqs";
+
+	}
+
+	@GetMapping("/createFaq")
+	public String createFaqPage(Model model) {
+
+		FAQModel faq = new FAQModel();
+
+		model.addAttribute("faq", faq);
+		return "admin/addfaq";
+
+	}
+
+	@GetMapping("/viewFaqs")
+	public String viewFaqsPage(Model model) {
+
+		List<FAQModel> faqs = adminService.findAllFAQs();
+		model.addAttribute("faqs", faqs);
+		return "admin/viewfaqs";
+
+	}
+
+
+	@PostMapping("/postFaq")
+	public String postFaq(@ModelAttribute("faq") FAQModel faq) {
+
+		adminService.addFaq(faq);
+
+		return "redirect:/admin";
+
+	}
+
+	@GetMapping("/editFaq/{id}")
+	public String editFaqPage(Model model, @PathVariable("id") Long id) {
+		FAQModel faq = adminService.findFAQById(id);
+		model.addAttribute("faq",faq );
+		return "admin/editfaq";
+
+	}
+
+	@PostMapping("/updateFaq")
+	public String updateFaq(@ModelAttribute("faq") FAQModel faq) {
+
+		adminService.addFaq(faq);
+
 		return "redirect:/admin";
 
 	}
