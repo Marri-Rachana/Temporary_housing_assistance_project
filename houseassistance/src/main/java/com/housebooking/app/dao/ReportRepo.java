@@ -17,4 +17,8 @@ public interface ReportRepo extends JpaRepository<ReportModel, Long> {
     @Query( value = "select * from reports where id = :id", nativeQuery = true)
     ReportModel findReportById(Long id);
 
+    @Query( value = "select * from reports where user_type = 'houseowner'", nativeQuery = true)
+    List<ReportModel> findAllByOwnerType();
+
+
 }

@@ -25,6 +25,9 @@ public class AdminService {
   @Autowired
   private HomeRepo homeRepo;
 
+  @Autowired
+  private HouseRepo houseRepo;
+
 	public String addAnnouncement(Announcement announcement) {
 
 		announcementRepo.save(announcement);
@@ -71,6 +74,18 @@ public class AdminService {
 		reportRepo.deleteById(id);
 
 
+	}
+
+	public List<ReportModel> findAllHousesReports() {
+		List<ReportModel> reports = reportRepo.findAllByOwnerType();
+		return reports;
+	}
+
+	public void removeHouse(Long id) {
+		ReportModel report = reportRepo.findReportById(id);
+		HouseModel house = houseRepo.findbyHouseName(report.getHouseName());
+		houseRepo.deleteById(house.getId());
+		reportRepo.deleteById(id);
 	}
 
 }

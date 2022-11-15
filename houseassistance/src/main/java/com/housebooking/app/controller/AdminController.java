@@ -146,4 +146,21 @@ public class AdminController {
 
 	}
 
+	@GetMapping("/spamHouses")
+	public String getSpamHouses(Model model) {
+
+		List<ReportModel> houseReports = adminService.findAllHousesReports();
+		model.addAttribute("reports", houseReports);
+		return "admin/spamowners";
+
+	}
+
+	@GetMapping("/removeHouse/{id}")
+	public String removeSpamHouses(Model model, @PathVariable("id") Long id) {
+
+		adminService.removeHouse(id);
+		return "redirect:/admin";
+
+	}
+
 }

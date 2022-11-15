@@ -19,6 +19,7 @@ public class ReportModel {
 	private String userMail;
 	private String userType;
 	private String reason;
+	private String houseName;
 	
 	
 }
