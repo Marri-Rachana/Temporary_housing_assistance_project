@@ -67,109 +67,46 @@
   </div>
 </nav><br>
 <div class="container">
+  <center><h2 style="color:blue">Reserve House</h2></center>
   <br>
-  <div class="row">
-
-<th:block th:each="house : ${houses}">
-
- 			<div class="card col-3 mt-3" style="margin:20px;">
-                <div class="card-horizontal">
-                    <div class="img-square-wrapper">
-                        <img class="" src="http://via.placeholder.com/300x180" alt="Card image cap">
-                    </div>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                         Name:
-     						<th:block  th:text="${house.houseName}">
-     						</th:block>
-                        </h4>
-                        <p class="card-text">
-                        Details:
-     						<th:block th:text="${house.houseDetails}">
-     						</th:block>
-                        </p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-					     <li class="list-group-item">
-					      Address:
-     						<th:block th:text="${house.houseAddress}">
-     						</th:block>
-					     </li>
-					    <li class="list-group-item"  >
-					    Contact:
-     						<th:block th:text="${house.houseContact}">
-     						</th:block>
-					    </li>
-					    <li class="list-group-item" >
-					     Mail:
-     						<th:block th:text="${house.houseOwnerMail}">
-     						</th:block>
-					    </li>
-					    <li class="list-group-item" >
-					     City:
-     						<th:block th:text="${house.city}">
-     						</th:block>
-					    </li>
-  					</ul>
-				  <div class="card-body">
-				     <h5 class="card-title" >
-				     Rent:
-				     <th:block th:text="${house.houseRent}">
-				     </th:block>/- per month
-				     </h5>
-				    <p class="card-text">
-				    Type:
-				     <th:block  th:text="${house.houseType}">
-				     </th:block>
-				    </p>
-				    <p class="card-text">
-				    Available From:
-				     <th:block  th:text="${house.availableFrom}">
-				     </th:block>
-				    </p>
-				    <p class="card-text">
-				    Parking Availability:
-				     <th:block  th:text="${house.parking}">
-				     </th:block>
-				    </p>
-				      <p class="card-text">
-				    Pet Friendly:
-				     <th:block  th:text="${house.petFriendly}">
-				     </th:block>
-				    </p>
-				     <p class="card-text">
-				    Lawn Availability:
-				     <th:block  th:text="${house.lawn}">
-				     </th:block>
-				    </p>
-				  </div>
-                </div>
-                <div class="card-footer">
-                   
-	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/reserve/' + ${house.Id}}">Reserve House</a>
-	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/appointment/' + ${house.Id}}">Book Appointment</a>
-	  			  <form action="#" th:action="@{'/addToFavourites/' + ${house.Id}}" method="post">
-			  <button type="submit" class="btn btn-success">
-	  			Add To Favourites
-			 </button>
-		   </form>
-                </div>
-                
-                 <div class="card-footer">
-                   
-	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/likeHouse/' + ${house.Id}}"><i class="bi bi-hand-thumbs-up"></i></a>
-	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/disLikeHouse/' + ${house.Id}}"><i class="bi bi-hand-thumbs-down"></i></a>
-	  			
-                </div>
-            </div>
-
-
-</th:block> 
-
-
+   <div class="col d-flex justify-content-center">
+  <div class="card" style="width: 28rem;">
+  <div class="card-body">
+  <form action="#" th:action=@{/reserveHouse} th:object="${reserve}" method="post" enctype="multipart/form-data">
+    
+    <div class="form-group">
+    <label>House Id</label>
+      <input type="text" class="form-control" name="houseid" th:value="${houseid}" required/>
+    </div>
+    <br>
+    
+    <div class="form-group">
+    <label>Move In Date</label>
+      <input type="date" class="form-control" th:field="*{moveInDate}" required/>
+    </div>
+    <br>
+    <div class="form-group">
+    <label>Passport</label>
+      <input type="file" class="form-control" name="doc1" required/>
+    </div><br>
+    
+    <div class="form-group">
+    <label>Driving License</label>
+      <input type="file" class="form-control" name="doc2" required/>
+    </div><br>
+    
+    <div class="form-group">
+    <label>Apply Coupon</label>
+      <input type="text" class="form-control" th:field="${coupon}"/>
+    </div>
+    <br>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+   </div>
 </div>
 </div>
-
+</div>
  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
