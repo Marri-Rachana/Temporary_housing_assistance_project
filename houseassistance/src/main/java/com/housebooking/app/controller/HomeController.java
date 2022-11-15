@@ -10,11 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.housebooking.app.model.EmailModel;
@@ -55,19 +51,30 @@ public class HomeController {
 		model.addAttribute("user", usermodel);
 		return "home/register";
 	}
-	
+
 	@PostMapping("/saveUser")
-	public String saveUser(@ModelAttribute("user") UserModel user)
+	public String saveUser(@ModelAttribute("user") UserModel user,
+			@RequestParam("mobileno") String mobileNo,
+			@RequestParam("age") String age,
+			@RequestParam("address") String address, Model model)
 	{
 		System.out.println("save===user");
 		user.setUsername(user.getFirstname()+user.getLastname());
-		homeService.saveUser(user);
+		int output = homeService.saveUser(user);
+		homeService.saveUserProfile(age, address, user.getEmail());
+		homeService.saveUserContact(mobileNo, user.getEmail());
+
+		if(output > 0) {
 		return "redirect:/login";
+		}
+		else {
+			model.addAttribute("errormsg", "Account creation failed");
+			return "home/error";
+		}
 	}
 	
-	
 	@GetMapping("/login")
-	public String getLoginPage(Model model,  HttpSession session)
+	public String getLoginPage(Model model,  HttpSession session, HttpServletRequest request)
 	{	
 		@SuppressWarnings("unchecked")
 		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
@@ -218,16 +225,26 @@ public class HomeController {
 			return "home/error";
 		}
 		UserModel userdata = homeService.findUser(messages.get(0));
+		model.addAttribute("role", userdata.getUsertype());
 		model.addAttribute("user", userdata);
         return "home/profile";
     }
 	
 	@PostMapping("/updateProfile")
-	public String updateProfile(@ModelAttribute("user") UserModel user)
+	public String updateProfile(@ModelAttribute("user") UserModel user, Model model)
 	{
 		System.out.println("save===user");
-		homeService.saveUser(user);
-		return "redirect:/profile";
+		int output =homeService.saveUser(user);
+
+		if(output>0) {
+			return "redirect:/profile";
+		}
+
+		else {
+			model.addAttribute("errormsg", "Operation failed. Please try again");
+			return "home/error";
+		}
+
 	}
 	
 	@PostMapping("/deleteProfile/{id}")

@@ -3,6 +3,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.housebooking.app.dao.UserContactRepo;
+import com.housebooking.app.dao.UserProfileRepo;
+import com.housebooking.app.model.UserContactModel;
+import com.housebooking.app.model.UserProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,13 +23,27 @@ public class HomeService {
 	private HomeRepo homeRepo;
 	@Autowired 
 	private JavaMailSender javaMailSender;
+
+	@Autowired
+	private UserProfileRepo userProfileRepo;
+    @Autowired
+	private UserContactModel userContact;
+
+	private UserContactRepo userContactRepo;
 	 
     @Value("${spring.mail.username}") private String sender;
-	
-	public void saveUser(UserModel user) {
+
+	public int saveUser(UserModel user) {
 		System.out.println("save===user===service");
 		homeRepo.save(user);
-		
+		if(homeRepo.save(user)!=null) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+
+
 	}
 	
 	public UserModel authenticateUser(UserModel usermodel) {
@@ -94,6 +112,25 @@ public class HomeService {
 	public List<UserModel> getAllStudents() {
 		// TODO Auto-generated method stub
 		return homeRepo.findAllStudents();
+	}
+
+	public void saveUserProfile(String age, String address, String email) {
+		// TODO Auto-generated method stub
+		UserModel user = homeRepo.findbyEmail(email);
+		UserProfileModel userProfile = new UserProfileModel();
+		userProfile.setUser(user);
+		userProfile.setAddress(address);
+		userProfile.setAge(age);
+		userProfileRepo.save(userProfile);
+	}
+
+	public void saveUserContact(String mobileNo, String email) {
+		// TODO Auto-generated method stub
+		UserModel user = homeRepo.findbyEmail(email);
+		userContact.setUser(user);
+		userContact.setMobileNo(mobileNo);
+		userContactRepo.save(userContact);
+
 	}
 
 
