@@ -28,32 +28,31 @@
 </nav><br>
 <div class="container">
 
-  <center><h2 style="color:blue">Post Announcement</h2></center>
+  <center><h2 style="color:blue">Spam Houses</h2></center>
   <br>
-   <div class="col d-flex justify-content-center">
-  <div class="card" style="width: 28rem;">
-  <div class="card-body">
-  <form action="#" th:action=@{/postAnnouncement} th:object="${announcement}" method="post">
-    <div class="form-group">
-     <input type="text" class="form-control" placeholder="Enter Announcement Title" th:field="*{announcementTitle}" required/>
-    </div><br>
-    <div class="form-group">
-     <textarea class="form-control" placeholder="Enter Announcement Description"  th:field="*{announcementDescription}" required/>
-    </div><br>
-    <div class="form-group">
-    <label style="margin: 5px;">Start Date</label>
-     <input type="date" class="form-control" placeholder="Start Date"  th:field="*{startDate}" required/> 
-    </div><br>
-    <div class="form-group">
-     <label style="margin: 5px;">Start Time</label>
-     <input type="time" class="form-control" placeholder="Start Time"  th:field="*{startTime}" required/>
-    </div><br>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
-   </div>
-</div>
-</div>
-		
+
+  
+  <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Owner Mail</th>
+      <th scope="col">House Name</th>
+      <th scope="col">Reason</th>
+      <th scope="col">Remove House</th>
+    </tr>
+  </thead>
+  <tbody>
+  <th:block th:each="report : ${reports}">
+    <tr>
+      <td th:text="${report.userMail}"></td>
+      <td th:text="${report.houseName}"></td>
+      <td th:text="${report.reason}"></td>
+      <td><a th:href="@{'/removeHouse/' + ${report.Id}}" class="btn btn-danger">Remove</a></td>
+    </tr>
+  </th:block>
+  </tbody>
+</table>
+
 
 </div>
 </body>
