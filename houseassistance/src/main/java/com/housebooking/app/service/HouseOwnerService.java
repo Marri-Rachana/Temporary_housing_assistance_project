@@ -1,16 +1,11 @@
 package com.housebooking.app.service;
 
-import com.housebooking.app.dao.HouseRepo;
-import com.housebooking.app.dao.ReportRepo;
-import com.housebooking.app.dao.ReviewRepo;
-import com.housebooking.app.dao.TicketRepo;
-import com.housebooking.app.model.HouseModel;
-import com.housebooking.app.model.ReportModel;
-import com.housebooking.app.model.ReviewModel;
-import com.housebooking.app.model.TicketModel;
+import com.housebooking.app.dao.*;
+import com.housebooking.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HouseOwnerService {
 
@@ -25,6 +20,9 @@ public class HouseOwnerService {
 
     @Autowired
     private TicketRepo ticketRepo;
+
+    @Autowired
+    private MessageRepo messageRepo;
     public void saveHouse(HouseModel house) {
 
         houseRepo.save(house);
@@ -64,6 +62,19 @@ public class HouseOwnerService {
         // TODO Auto-generated method stub
         ticketRepo.save(ticket);
 
+    }
+
+    public MessageModel getMsgById(Long id) {
+        // TODO Auto-generated method stub
+        return messageRepo.findMessageById(id);
+
+    }
+
+    public List<MessageModel> findAllMessages(String email) {
+        // TODO Auto-generated method stub
+        List<MessageModel> msgs = messageRepo.findAll();
+        List<MessageModel> studentMsgs = msgs.stream().filter(msg -> msg.getOwnerMail().equals(email) && msg.getAnswer().equals("")).collect(Collectors.toList());
+        return studentMsgs;
     }
 
 }

@@ -10,15 +10,15 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "reviews")
-public class ReviewModel {
+@Table(name = "messages")
+public class MessageModel {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
-	private String rating;
-	private String description;
-	private String userMail;
-
+	private String studentMail;
+	private String ownerMail;
+	private String question;
+	private String answer;
 	
 }

@@ -3,17 +3,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.housebooking.app.dao.AnnouncementRepo;
 import com.housebooking.app.dao.UserContactRepo;
 import com.housebooking.app.dao.UserProfileRepo;
-import com.housebooking.app.model.UserContactModel;
-import com.housebooking.app.model.UserProfileModel;
+import com.housebooking.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import com.housebooking.app.dao.HomeRepo;
-import com.housebooking.app.model.EmailModel;
-import com.housebooking.app.model.UserModel;
 import org.springframework.mail.SimpleMailMessage;
 
 @Service
@@ -29,7 +27,11 @@ public class HomeService {
     @Autowired
 	private UserContactModel userContact;
 
+	@Autowired
 	private UserContactRepo userContactRepo;
+
+	@Autowired
+	private AnnouncementRepo announcementRepo;
 	 
     @Value("${spring.mail.username}") private String sender;
 
@@ -131,6 +133,12 @@ public class HomeService {
 		userContact.setMobileNo(mobileNo);
 		userContactRepo.save(userContact);
 
+	}
+
+	public List<Announcement> getAllAnnouncements() {
+		// TODO Auto-generated method stub
+
+		return announcementRepo.findAll();
 	}
 
 
