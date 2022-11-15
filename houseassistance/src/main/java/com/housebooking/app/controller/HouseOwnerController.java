@@ -1,12 +1,17 @@
 package com.housebooking.app.controller;
 
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.housebooking.app.model.*;
+import com.housebooking.app.service.AdminService;
+import com.housebooking.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,18 +31,24 @@ import com.housebooking.app.utils.FileUploadUtil;
 public class HouseOwnerController {
 	@Autowired
 	private HomeService homeService;
-
-	@Autowired
-	private HouseModel house;
 	
 	@Autowired
 	private HouseOwnerService houseOwnerService;
 
 	@Autowired
-	private ReportModel report;
+	private AdminService adminService;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private ReviewModel review;
+
+	@Autowired
+	private HouseModel house;
+
+	@Autowired
+	private ReportModel report;
 
 	@Autowired
 	private TicketModel ticket;
@@ -74,19 +85,33 @@ public class HouseOwnerController {
 	}
 	
 	@PostMapping("/saveHouse")
-	public String saveHouseBooking(@ModelAttribute("house") HouseModel house, @RequestParam("image") MultipartFile multipartFile)
+	public String saveHouseBooking(@ModelAttribute("house") HouseModel house, @RequestParam("image") MultipartFile multipartFile
+			, @RequestParam("doc") MultipartFile doc, Model model, HttpSession session)
 	{
 		System.out.println("house created");
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        UserModel userdata = homeService.findUser(messages.get(0));
 		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 		
 		try {
 			house.setHousePhoto(Base64.getEncoder().encodeToString(multipartFile.getBytes()));
+			house.setDocument(Base64.getEncoder().encodeToString(doc.getBytes()));
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+		house.setHouseOwnerMail(userdata.getEmail());
 		house.setIsBooked("0");
 		house.setIsHide("0");
+		house.setLikes(0);
+		house.setDislikes(0);
 		houseOwnerService.saveHouse(house);
 		
 		return "redirect:/houseowner";
@@ -196,17 +221,26 @@ public class HouseOwnerController {
 		}
 		UserModel userdata = homeService.findUser(messages.get(0));
 		model.addAttribute("review", review);
+		model.addAttribute("usermail", userdata.getEmail());
 		model.addAttribute("role", userdata.getUsertype());
 
 		return "houseowner/reviewapp";
 	}
 	
 	@PostMapping("/reviewApp")
-	public String reviewApp(@ModelAttribute("review") ReviewModel review)
+	public String reviewApp(@ModelAttribute("review") ReviewModel review, Model model, HttpSession session)
 	{
 		System.out.println("reviewed App");
 		
 
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		review.setUserMail(userdata.getEmail());
 		houseOwnerService.saveReview(review);
 		
 		return "redirect:/houseowner";
@@ -217,7 +251,7 @@ public class HouseOwnerController {
 
 
 		@SuppressWarnings("unchecked")
-		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
 		if(messages == null) {
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
@@ -236,7 +270,7 @@ public class HouseOwnerController {
 		System.out.println("raised Ticket");
 
 		@SuppressWarnings("unchecked")
-		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
 		if(messages == null) {
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
@@ -245,6 +279,92 @@ public class HouseOwnerController {
 		ticket.setUserMail(userdata.getEmail());
 
 		houseOwnerService.saveTicket(ticket);
+
+		return "redirect:/houseowner";
+	}
+
+	@GetMapping("/notifications")
+	public String notifications(Model model, HttpSession session) {
+
+
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+
+		List<Announcement> notifications = homeService.getAllAnnouncements();
+		model.addAttribute("notifications", notifications);
+		model.addAttribute("role", userdata.getUsertype());
+		return "houseowner/viewnotifications";
+	}
+
+	@GetMapping("/viewFaqsHO")
+	public String viewFaqsPage(Model model, HttpSession session) {
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		List<FAQModel> faqs = adminService.findAllFAQs();
+		model.addAttribute("faqs", faqs);
+		return "houseowner/viewfaqs";
+
+	}
+
+	@GetMapping("/viewMessages")
+	public String viewMessagesPage(Model model, HttpSession session) {
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		List<MessageModel> msgs = houseOwnerService.findAllMessages(userdata.getEmail());
+		model.addAttribute("msgs", msgs);
+		return "houseowner/viewmsgs";
+
+	}
+
+	@GetMapping("/replyMsgPage/{id}")
+	public String replyMsgPage(Model model, HttpSession session, @PathVariable(name="id") Long id) {
+
+
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+
+		MessageModel msg = houseOwnerService.getMsgById(id);
+		model.addAttribute("msg", msg);
+		model.addAttribute("role", userdata.getUsertype());
+
+		return "houseowner/replymessage";
+	}
+
+	@PostMapping("/replyMsg")
+	public String raiseTicket(@ModelAttribute("msg") MessageModel msg, HttpSession session, Model model )
+	{
+		System.out.println("raised Ticket");
+
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+
+
+		userService.saveMsg(msg);
 
 		return "redirect:/houseowner";
 	}

@@ -30,6 +30,11 @@ public class HouseModel {
 	private String housePhoto;
 	private String isBooked;
 	private String isHide;
+	private int likes;
+	private int dislikes;
+	@Lob
+	@Column(columnDefinition = "MEDIUMBLOB")
+	private String document;
 	
 	
 	
