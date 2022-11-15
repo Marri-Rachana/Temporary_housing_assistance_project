@@ -28,13 +28,13 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" style="color:green" aria-current="page" href="/reportStudent">Report Student</a>
-        </li>
+        </li> 
          <li class="nav-item">
           <a class="nav-link" style="color:green" aria-current="page" href="/review">Post Review</a>
-        </li>
+        </li> 
          <li class="nav-item">
           <a class="nav-link" style="color:green" aria-current="page" href="/ticket">Raise Ticket</a>
-        </li>
+        </li>  
       </th:block>
         
       </ul>
@@ -60,64 +60,34 @@
   <br>
   <div class="row">
 
-<th:block th:each="house : ${houses}">
+<th:block th:each="notification : ${notifications}">
 
  			<div class="card col-3 mt-3" style="margin:20px;">
                 <div class="card-horizontal">
-                    <div class="img-square-wrapper">
-                        <img class="" src="http://via.placeholder.com/300x180" alt="Card image cap">
-                    </div>
                     <div class="card-body">
-                        <h4 class="card-title">
-                         Name:
-     						<th:block  th:text="${house.houseName}">
+                        <h5 class="card-title">
+                         Announcement Title : 
+     						<th:block  th:text="${notification.announcementTitle}">
      						</th:block>
-                        </h4>
+                        </h5>
                         <p class="card-text">
-                        Details:
-     						<th:block th:text="${house.houseDetails}">
+                        Announcement Details : 
+     						<th:block th:text="${notification.announcementDescription}">
      						</th:block>
                         </p>
                     </div>
                     <ul class="list-group list-group-flush">
 					     <li class="list-group-item">
-					      Address:
-     						<th:block th:text="${house.houseAddress}">
+					     Start Date : 
+     						<th:block th:text="${notification.startDate}">
      						</th:block>
 					     </li>
 					    <li class="list-group-item"  >
-					    Contact:
-     						<th:block th:text="${house.houseContact}">
-     						</th:block>
-					    </li>
-					    <li class="list-group-item" >
-					     Mail:
-     						<th:block th:text="${house.houseOwnerMail}">
+					    Time : 
+     						<th:block th:text="${notification.startTime}">
      						</th:block>
 					    </li>
   					</ul>
-				  <div class="card-body">
-				     <h5 class="card-title" >
-				     Rent:
-				     <th:block th:text="${house.houseRent}">
-				     </th:block>/- per month
-				     </h5>
-				    <p class="card-text">
-				    Type:
-				     <th:block  th:text="${house.houseType}">
-				     </th:block>
-				    </p>
-				  </div>
-                </div>
-                <div class="card-footer">
-                   
-	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/editHouse/' + ${house.Id}}">Update House</a>
-			
-    				  <form action="#" th:action="@{'/deleteHouse/' + ${house.Id}}" method="post">
-			  <button type="submit" class="btn btn-danger">
-	  			Delete House
-			 </button>
-		   </form>
                 </div>
             </div>
 

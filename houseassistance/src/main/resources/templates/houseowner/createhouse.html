@@ -27,7 +27,10 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" style="color:green" aria-current="page" href="/reportStudent">Report Student</a>
-        </li>  
+        </li>
+         <li class="nav-item">
+          <a class="nav-link" style="color:green" aria-current="page" href="/ticket">Raise Ticket</a>
+        </li>
       </th:block>
         
       </ul>
@@ -40,7 +43,7 @@
 		  </button>
 		  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
 		    <button class="dropdown-item" type="button"><a href="/profile" style="color:black;text-decoration:none">Profile</a></button>
-		    <button class="dropdown-item" type="button">Notifications</button>
+		    <button class="dropdown-item" type="button"><a href="/notifications" style="color:black;text-decoration:none">Notifications</a></button>
 		    <button class="dropdown-item" type="button"></button>
 		  </div>
 		</div>
@@ -57,9 +60,6 @@
   <div class="card-body">
   <form action="#" th:action=@{/saveHouse} th:object="${house}" method="post" enctype="multipart/form-data">
     <div class="form-group">
-     <input type="text" class="form-control" placeholder="Enter your Email" th:field="*{houseOwnerMail}" required/>
-    </div><br>
-    <div class="form-group">
      <input type="text" class="form-control" placeholder="Enter House Name"  th:field="*{houseName}" required/>
     </div><br>
     <div class="form-group">
@@ -75,6 +75,11 @@
       <input type="number" class="form-control" placeholder="Enter House Rent"  th:field="*{houseRent}" required/>
     </div><br>
     <div class="form-group">
+    <label>House Document</label>
+      <input type="file" class="form-control" name="doc" accept="application/pdf" required/>
+    </div><br>
+    <div class="form-group">
+    <label>House Image</label>
       <input type="file" class="form-control" name="image" accept="image/png, image/jpeg" required/>
     </div><br>
     <div class="form-group">
@@ -86,6 +91,47 @@
     <option th:value="2bhk">4BHK</option>
     </select>
     </div><br>
+    <div class="form-group">
+     <select th:field="*{city}" class="form-control">
+     <option th:value="null">Select City</option>
+    <option th:value="hyderabad">Hyderabad</option>
+    <option th:value="banglore">Banglore</option>
+    <option th:value="chennai">Chennai</option>
+    <option th:value="pune">Pune</option>
+    <option th:value="mumbai">Mumbai</option>
+    <option th:value="cochin">Cochin</option>
+    <option th:value="kolkata">Kolkata</option>
+    <option th:value="vijayawada">Vijayawada</option>
+    </select>
+    </div><br>
+
+    <div class="form-group">
+   <select th:field="*{parking}" class="form-control">
+     <option th:value="null">Parking slot Availability</option>
+     <option th:value="yes">yes</option>
+     <option th:value="no">no</option>
+    </select>
+    </div>
+    <br>
+
+     <div class="form-group">
+   <select th:field="*{petFriendly}" class="form-control">
+     <option th:value="null">Pet Friendly</option>
+     <option th:value="yes">yes</option>
+     <option th:value="no">no</option>
+    </select>
+    </div>
+    <br>
+
+     <div class="form-group">
+   <select th:field="*{lawn}" class="form-control">
+     <option th:value="null">Lawn Availability</option>
+     <option th:value="yes">yes</option>
+     <option th:value="no">no</option>
+    </select>
+    </div>
+    <br>
+
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
    </div>
