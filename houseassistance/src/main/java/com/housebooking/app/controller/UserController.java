@@ -492,4 +492,41 @@ public class UserController {
 
 		return "redirect:/user";
 	}
+
+	@GetMapping("/reviewapp")
+	public String review(Model model, HttpSession session) {
+
+
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		ReviewModel review = new ReviewModel();
+		model.addAttribute("review", review);
+		model.addAttribute("usermail", userdata.getEmail());
+		model.addAttribute("role", userdata.getUsertype());
+
+		return "user/reviewapp";
+	}
+
+	@PostMapping("/reviewApplication")
+	public String reviewApp(@ModelAttribute("review") ReviewModel review, Model model, HttpSession session)
+	{
+		System.out.println("reviewed App");
+
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		review.setUserMail(userdata.getEmail());
+		houseOwnerService.saveReview(review);
+
+		return "redirect:/user";
+	}
 }
