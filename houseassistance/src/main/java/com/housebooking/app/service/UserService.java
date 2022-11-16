@@ -86,4 +86,20 @@ public class UserService {
         favouritesRepo.save(favourite);
     }
 
+
+    public void likeHouse(Long id) {
+        // TODO Auto-generated method stub
+        HouseModel house = houseRepo.findHouseById(id);
+        house.setLikes(house.getLikes() + 1);
+        houseRepo.save(house);
+
+    }
+
+    public void disLikeHouse(Long id) {
+        // TODO Auto-generated method stub
+        HouseModel house = houseRepo.findHouseById(id);
+        house.setDislikes(house.getDislikes() + 1);
+        houseRepo.save(house);
+    }
+
 }
