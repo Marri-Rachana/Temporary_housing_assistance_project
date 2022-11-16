@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
+import com.housebooking.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,17 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.housebooking.app.model.Announcement;
-import com.housebooking.app.model.AppointmentModel;
-import com.housebooking.app.model.FAQModel;
-import com.housebooking.app.model.HouseModel;
-import com.housebooking.app.model.MessageModel;
-import com.housebooking.app.model.ReportModel;
-import com.housebooking.app.model.ReserveModel;
-import com.housebooking.app.model.ReviewModel;
-import com.housebooking.app.model.ReviewOwnerModel;
-import com.housebooking.app.model.TicketModel;
-import com.housebooking.app.model.UserModel;
 import com.housebooking.app.service.AdminService;
 import com.housebooking.app.service.HomeService;
 import com.housebooking.app.service.HouseOwnerService;
@@ -58,6 +48,9 @@ public class UserController {
 
     @Autowired
 	private ReviewOwnerModel review;
+
+	@Autowired
+	private FavouritesModel favourite;
 
 	@GetMapping("/user")
 	public String getUserWelcomePage(@ModelAttribute("user") UserModel user, Model model, HttpSession session)
@@ -177,6 +170,47 @@ public class UserController {
         	model.addAttribute("errormsg", "Invalid Coupon");
 			return "home/error";
         }
+
+	}
+
+	@GetMapping("/previousBookings")
+	public String previousBookings(Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		model.addAttribute("sessionMessages", messages);
+		UserModel userdata = homeService.findUser(messages.get(0));
+		model.addAttribute("role", userdata.getUsertype());
+
+		Set<AppointmentModel> bookings = userService.getAllAppointmentsByUserId(userdata.getId());
+
+		model.addAttribute("bookings", bookings);
+		return "user/previousbookings";
+	}
+
+	@PostMapping("addToFavourites/{id}")
+	public String addToFavourites(@PathVariable(name="id") String id, Model model, HttpSession session) {
+
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		model.addAttribute("sessionMessages", messages);
+		UserModel userdata = homeService.findUser(messages.get(0));
+
+		favourite.setHouseId(id);
+		favourite.setUserId(userdata.getId().toString());
+
+		userService.savefavourites(favourite);
+		return "redirect:/user";
 
 	}
 }

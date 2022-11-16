@@ -5,6 +5,7 @@ import com.housebooking.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserService {
@@ -31,6 +32,9 @@ public class UserService {
 
     @Autowired
     private ReserveRepo reserveRepo;
+
+    @Autowired
+    private FavouritesRepo favouritesRepo;
 
     public void saveMsg(MessageModel msg) {
         messageRepo.save(msg);
@@ -67,6 +71,19 @@ public class UserService {
         }
 
 
+    }
+
+    public Set<AppointmentModel> getAllAppointmentsByUserId(Long id) {
+
+        List<AppointmentModel> appointments = appointmentRepo.findAll();
+
+        Set<AppointmentModel> appointmentsSet = appointments.stream().filter(apt -> apt.getUserId().equals(id.toString())).collect(Collectors.toSet());
+        return appointmentsSet;
+    }
+
+    public void savefavourites(FavouritesModel favourite) {
+        // TODO Auto-generated method stub
+        favouritesRepo.save(favourite);
     }
 
 }
