@@ -213,4 +213,41 @@ public class UserController {
 		return "redirect:/user";
 
 	}
+	@GetMapping("/likeHouse/{id}")
+	public String likeHouse(@PathVariable(name="id") Long id, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		model.addAttribute("sessionMessages", messages);
+		UserModel userdata = homeService.findUser(messages.get(0));
+		model.addAttribute("role", userdata.getUsertype());
+
+		userService.likeHouse(id);
+
+		return "redirect:/user";
+	}
+
+	@GetMapping("/disLikeHouse/{id}")
+	public String disLikeHouse(@PathVariable(name="id") Long id, Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		model.addAttribute("sessionMessages", messages);
+		UserModel userdata = homeService.findUser(messages.get(0));
+		model.addAttribute("role", userdata.getUsertype());
+
+		userService.disLikeHouse(id);
+
+		return "redirect:/user";
+	}
 }
