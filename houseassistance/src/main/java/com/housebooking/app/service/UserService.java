@@ -4,6 +4,7 @@ import com.housebooking.app.dao.*;
 import com.housebooking.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -116,6 +117,43 @@ public class UserService {
         List<MessageModel> msgs = messageRepo.findAll();
         List<MessageModel> ownerMsgs = msgs.stream().filter(msg -> msg.getStudentMail().equals(email) && !msg.getAnswer().equals("")).collect(Collectors.toList());
         return ownerMsgs;
+    }
+
+    public List<HouseModel> sort(String price) {
+        // TODO Auto-generated method stub
+        List<HouseModel> houses = houseRepo.findAll();
+        String startprice,endprice;
+        int sp,ep;
+        startprice=price.split("to")[0];
+        System.out.println("-------------"+startprice);
+        endprice=price.split("to")[1];
+        sp= Integer.parseInt(startprice);
+        ep= Integer.parseInt(endprice);
+        List<HouseModel> advnaceFilteredHouses = houses.stream().filter(
+                house -> Integer.parseInt(house.getHouseRent()) >= sp && Integer.parseInt(house.getHouseRent()) <= ep).collect(Collectors.toList());
+
+        Comparator<HouseModel> rentComparator =
+                (house1, house2) -> house1.getHouseRent().compareTo(house2.getHouseRent());
+        return advnaceFilteredHouses.stream().sorted(rentComparator).collect(Collectors.toList());
+//		return advnaceFilteredHouses;
+    }
+
+    public List<HouseModel> filterHouses(String city, String moveInDate) {
+        // TODO Auto-generated method stub
+        List<HouseModel> houses = houseRepo.findAll();
+        List<HouseModel> filteredHouses = houses.stream().filter(house -> house.getCity().equals(city) && house.getAvailableFrom().equals(moveInDate)).collect(Collectors.toList());
+        return filteredHouses;
+    }
+
+    public List<HouseModel> advanceFilterHouses(String city, String moveInDate, String parking, String petFriendly,
+                                                String lawn, String houseType) {
+        // TODO Auto-generated method stub
+        List<HouseModel> houses = houseRepo.findAll();
+        List<HouseModel> advnaceFilteredHouses = houses.stream().filter(house -> house.getCity().equals(city)
+                && house.getAvailableFrom().equals(moveInDate) && house.getParking().equals(parking)
+                && house.getPetFriendly().equals(petFriendly)
+                && house.getLawn().equals(lawn) && house.getHouseType().equals(houseType)).collect(Collectors.toList());
+        return advnaceFilteredHouses;
     }
 
 }

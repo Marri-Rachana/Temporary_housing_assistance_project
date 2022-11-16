@@ -322,4 +322,107 @@ public class UserController {
 		model.addAttribute("role", userdata.getUsertype());
 		return "user/welcomeuser";
 	}
+
+	@GetMapping("/filter")
+	public String viewFiltersPage(Model model, HttpSession session) {
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		model.addAttribute("role", userdata.getUsertype());
+		List<HouseModel> houses = userService.getAllHouses();
+		model.addAttribute("houses", houses);
+		return "user/filter";
+
+	}
+
+	@GetMapping("/advancedFilter")
+	public String viewAdvanceFiltersPage(Model model, HttpSession session) {
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		model.addAttribute("role", userdata.getUsertype());
+		List<HouseModel> houses = userService.getAllHouses();
+		model.addAttribute("houses", houses);
+		return "user/advancefilter";
+
+	}
+
+	@GetMapping("/sortByPrice")
+	public String sortByPricePage(Model model, HttpSession session) {
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		model.addAttribute("role", userdata.getUsertype());
+		List<HouseModel> houses = userService.getAllHouses();
+		model.addAttribute("houses", houses);
+		return "user/sortbyprice";
+
+	}
+
+	@PostMapping("/applyFilters")
+	public String applyFilters(Model model, HttpSession session, @RequestParam("city") String city,
+							   @RequestParam("moveInDate") String moveInDate) {
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		model.addAttribute("sessionMessages", messages);
+		List<HouseModel> houses = userService.filterHouses(city,moveInDate);
+		model.addAttribute("houses", houses);
+		model.addAttribute("role", userdata.getUsertype());
+		return "user/filter";
+	}
+
+	@PostMapping("/applyAdvanceFilters")
+	public String applyAdvanceFilters(Model model, HttpSession session, @RequestParam("city") String city,
+									  @RequestParam("moveInDate") String moveInDate, @RequestParam("parking") String parking,
+									  @RequestParam("petFriendly") String petFriendly, @RequestParam("lawn") String lawn,  @RequestParam("houseType") String houseType) {
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		model.addAttribute("sessionMessages", messages);
+		List<HouseModel> houses = userService.advanceFilterHouses(city,moveInDate,parking,petFriendly,lawn,houseType);
+		model.addAttribute("houses", houses);
+		model.addAttribute("role", userdata.getUsertype());
+		return "user/advancefilter";
+	}
+
+	@PostMapping("/sort")
+	public String sort(Model model, HttpSession session, @RequestParam("price") String price){
+
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		model.addAttribute("sessionMessages", messages);
+		List<HouseModel> houses = userService.sort(price);
+		model.addAttribute("houses", houses);
+		model.addAttribute("role", userdata.getUsertype());
+		return "user/sortbyprice";
+	}
 }
