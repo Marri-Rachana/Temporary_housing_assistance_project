@@ -14,5 +14,8 @@ public interface HomeRepo extends JpaRepository<UserModel, Long>{
 	@Query( value = "select * from users where usertype = 'student'", nativeQuery = true)
 	List<UserModel> findAllStudents();
 
+	@Query( value = "select * from users where usertype = 'houseowner'", nativeQuery = true)
+	List<UserModel> findAllOwners();
+
 
 }

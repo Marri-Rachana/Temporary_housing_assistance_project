@@ -250,4 +250,76 @@ public class UserController {
 
 		return "redirect:/user";
 	}
+
+	@GetMapping("/sendMessage")
+	public String viewMessagePage(Model model, HttpSession session) {
+
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		List<UserModel> owners = homeService.getAllOwners();
+		MessageModel msg = new MessageModel();
+		model.addAttribute("msg", msg);
+		model.addAttribute("owners", owners);
+		model.addAttribute("role", userdata.getUsertype());
+		return "user/sendmsg";
+
+	}
+
+	@PostMapping("/sendMsg")
+	public String saveMessage(@ModelAttribute("msg") MessageModel msg, HttpSession session, Model model )
+	{
+		System.out.println("raised Ticket");
+
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		msg.setStudentMail(userdata.getEmail());
+		msg.setAnswer("");
+
+		userService.saveMsg(msg);
+
+		return "redirect:/user";
+	}
+
+	@GetMapping("/viewReplies")
+	public String viewMessagesPage(Model model, HttpSession session) {
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		List<MessageModel> msgs = userService.findAllMessages(userdata.getEmail());
+		model.addAttribute("msgs", msgs);
+		model.addAttribute("role", userdata.getUsertype());
+		return "user/viewmessages";
+
+	}
+
+	@PostMapping("/searchHouse")
+	public String searchHouse(Model model, HttpSession session, @RequestParam("searchKey") String searchKey ) {
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		model.addAttribute("sessionMessages", messages);
+		List<HouseModel> houses = userService.searchHouses(searchKey);
+		model.addAttribute("houses", houses);
+		model.addAttribute("role", userdata.getUsertype());
+		return "user/welcomeuser";
+	}
 }
