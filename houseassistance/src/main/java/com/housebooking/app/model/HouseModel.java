@@ -13,7 +13,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "houses")
 public class HouseModel {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
@@ -24,7 +23,12 @@ public class HouseModel {
 	private String houseContact;
 	private String houseRent;
 	private String houseDetails;
-	
+	private String city;
+	private String availableFrom;
+	private String parking;
+	private String petFriendly;
+	private String lawn;
+
 	@Lob
 	@Column(columnDefinition = "MEDIUMBLOB")
 	private String housePhoto;
