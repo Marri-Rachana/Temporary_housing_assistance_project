@@ -141,6 +141,11 @@ public class HomeService {
 		return announcementRepo.findAll();
 	}
 
+	public List<UserModel> getAllOwners() {
+		// TODO Auto-generated method stub
+		return homeRepo.findAllOwners();
+	}
+
 
 
 }

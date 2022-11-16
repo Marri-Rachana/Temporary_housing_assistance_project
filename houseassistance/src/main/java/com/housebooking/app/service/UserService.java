@@ -102,4 +102,20 @@ public class UserService {
         houseRepo.save(house);
     }
 
+    public List<HouseModel> searchHouses(String searchKey) {
+        // TODO Auto-generated method stub
+        List<HouseModel> houses = houseRepo.findAll();
+        List<HouseModel> searchedHouses = houses.stream().filter(house -> house.getHouseName().contains(searchKey) ||
+                house.getHouseAddress().contains(searchKey) || house.getHouseDetails().contains(searchKey)
+                || house.getHouseType().contains(searchKey)).collect(Collectors.toList());
+        return searchedHouses;
+    }
+
+    public List<MessageModel> findAllMessages(String email) {
+        // TODO Auto-generated method stub
+        List<MessageModel> msgs = messageRepo.findAll();
+        List<MessageModel> ownerMsgs = msgs.stream().filter(msg -> msg.getStudentMail().equals(email) && !msg.getAnswer().equals("")).collect(Collectors.toList());
+        return ownerMsgs;
+    }
+
 }
