@@ -37,6 +37,9 @@ public class UserService {
     @Autowired
     private FavouritesRepo favouritesRepo;
 
+    @Autowired
+    private ReviewOwnerRepo reviewOwnerRepo;
+
     public void saveMsg(MessageModel msg) {
         messageRepo.save(msg);
 
@@ -154,6 +157,11 @@ public class UserService {
                 && house.getPetFriendly().equals(petFriendly)
                 && house.getLawn().equals(lawn) && house.getHouseType().equals(houseType)).collect(Collectors.toList());
         return advnaceFilteredHouses;
+    }
+
+    public void saveReviewOwner(ReviewOwnerModel review) {
+
+        reviewOwnerRepo.save(review);
     }
 
 }

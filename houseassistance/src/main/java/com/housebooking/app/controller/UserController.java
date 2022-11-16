@@ -425,4 +425,71 @@ public class UserController {
 		model.addAttribute("role", userdata.getUsertype());
 		return "user/sortbyprice";
 	}
+
+	@GetMapping("/reportOwner")
+	public String reportStudent(Model model, HttpSession session) {
+
+
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		List<UserModel> owners = homeService.getAllOwners();
+		model.addAttribute("owners", owners);
+		ReportModel report = new ReportModel();
+		model.addAttribute("report", report);
+		List<HouseModel> houses = userService.getAllHouses();
+		model.addAttribute("houses", houses);
+		model.addAttribute("role", userdata.getUsertype());
+
+		return "user/reportowner";
+	}
+
+	@PostMapping("/reportOwnerAndHouse")
+	public String report(@ModelAttribute("report") ReportModel report, Model model, HttpSession session)
+	{
+		System.out.println("reported Owner");
+
+		UserModel user = homeService.findUser(report.getUserMail());
+		report.setUserType(user.getUsertype());
+		houseOwnerService.saveReport(report);
+
+		return "redirect:/user";
+	}
+
+	@GetMapping("/reviewOwner")
+	public String reviewOwner(Model model, HttpSession session) {
+
+
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		List<UserModel> owners = homeService.getAllOwners();
+		model.addAttribute("owners", owners);
+		ReviewOwnerModel review = new ReviewOwnerModel();
+		model.addAttribute("review", review);
+		List<HouseModel> houses = userService.getAllHouses();
+		model.addAttribute("houses", houses);
+		model.addAttribute("role", userdata.getUsertype());
+
+		return "user/reviewowner";
+	}
+
+	@PostMapping("/reviewOwnerAndHouse")
+	public String reviewOwner(@ModelAttribute("review") ReviewOwnerModel review, Model model, HttpSession session)
+	{
+		System.out.println("reported Owner");
+
+		UserModel user = homeService.findUser(review.getOwnerMail());
+		userService.saveReviewOwner(review);
+
+		return "redirect:/user";
+	}
 }
