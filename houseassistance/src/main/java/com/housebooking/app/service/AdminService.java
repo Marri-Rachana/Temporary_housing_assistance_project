@@ -25,6 +25,9 @@ public class AdminService {
   @Autowired
   private HomeRepo homeRepo;
 
+	@Autowired
+	private CouponRepo couponRepo;
+
   @Autowired
   private HouseRepo houseRepo;
 
@@ -88,4 +91,8 @@ public class AdminService {
 		reportRepo.deleteById(id);
 	}
 
+
+	public void addCoupon(Coupon coupon) {
+		couponRepo.save(coupon);
+	}
 }
