@@ -17,5 +17,35 @@ import com.housebooking.app.model.UserModel;
 @DataJpaTest
 @AutoConfigureTestDatabase
 public class HomeControllerTest {
+    @Autowired
+    private TestEntityManager entityManager;
 
+    @Autowired
+    private HomeRepo homeRepo;
+
+    @Test
+    public void shouldStoreUser() {
+
+        UserModel user = new UserModel();
+
+        user.setFirstname("Yasoda");
+        user.setLastname("Krishna");
+        user.setEmail("yasoda1206@gmail.com");
+        user.setUsername("ykrishna");
+        user.setPassword("user1234");
+        user.setUsertype("student");
+        user.setSecurityQuestion("q1");
+        user.setSecurityAnswer("a1");
+
+        List<UserModel> userdata = homeRepo.findAll();
+
+        assertThat(userdata).isEmpty();
+
+        homeRepo.save(user);
+
+        List<UserModel> users = homeRepo.findAll();
+
+        assertThat(users).hasSize(1);
+
+    }
 }
