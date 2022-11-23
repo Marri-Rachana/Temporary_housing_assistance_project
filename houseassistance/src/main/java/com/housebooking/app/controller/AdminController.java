@@ -33,7 +33,8 @@ public class AdminController {
 		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
 
 		if (messages == null) {
-			messages = new ArrayList<>();
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
 		}
 		model.addAttribute("sessionMessages", messages);
 		UserModel userdata = homeService.findUser(messages.get(0));
@@ -145,7 +146,22 @@ public class AdminController {
 		return "redirect:/admin";
 
 	}
+	@GetMapping("/coupon")
+	public String viewCouponPage(Model model) {
 
+		Coupon coupon = new Coupon();
+		model.addAttribute("coupon",coupon);
+		return "admin/coupon";
+
+	}
+	@PostMapping("/postCoupon")
+	public String updateFaq(@ModelAttribute("coupon") Coupon coupon) {
+
+		adminService.addCoupon(coupon);
+
+		return "redirect:/admin";
+
+	}
 	@GetMapping("/spamHouses")
 	public String getSpamHouses(Model model) {
 
