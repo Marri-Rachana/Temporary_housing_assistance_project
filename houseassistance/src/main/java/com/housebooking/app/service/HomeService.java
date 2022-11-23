@@ -50,23 +50,30 @@ public class HomeService {
 	
 	public UserModel authenticateUser(UserModel usermodel) {
 		List<UserModel> user = homeRepo.findAll();
-		List<UserModel> veifiedUser = user.stream().filter(n -> n.getEmail().equals(usermodel.getEmail()) && n.getPassword().equals(usermodel.getPassword())).collect(Collectors.toList());
+		List<UserModel> verifiedUser = user.stream().filter(n -> (n.getEmail().equals(usermodel.getEmail()) || n.getUsername().equals(usermodel.getEmail())) && n.getPassword().equals(usermodel.getPassword())).collect(Collectors.toList());
 		
-		System.out.println(veifiedUser.get(0));
-		
-		return veifiedUser.get(0);
+		if(verifiedUser.size() ==1) {
+			return verifiedUser.get(0);
+		}
+		else {
+			return null;
+		}
 		
 	}
 
 	public UserModel validateUsername(UserModel user) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public UserModel validatePassword(UserModel usermodel) {
 		List<UserModel> user = homeRepo.findAll();
-		List<UserModel> veifiedUser = user.stream().filter(n -> n.getEmail().equals(usermodel.getEmail()) && n.getSecurityQuestion().equals(usermodel.getSecurityQuestion())  && n.getSecurityAnswer().equals(usermodel.getSecurityAnswer())).collect(Collectors.toList());
-		return veifiedUser.get(0);
+		List<UserModel> verifiedUser = user.stream().filter(n -> n.getEmail().equals(usermodel.getEmail()) && n.getSecurityQuestion().equals(usermodel.getSecurityQuestion())  && n.getSecurityAnswer().equals(usermodel.getSecurityAnswer())).collect(Collectors.toList());
+		if(verifiedUser.size() ==1) {
+			return verifiedUser.get(0);
+	}
+		else {
+			return null;
+		}
 	}
 
 	public void saveNewPassword(UserModel usermodel) {
@@ -101,8 +108,26 @@ public class HomeService {
 	public UserModel findUser(String email) {
 		List<UserModel> user = homeRepo.findAll();
 		List<UserModel> veifiedUser = user.stream().filter(n -> n.getEmail().equals(email)).collect(Collectors.toList());
+		if(veifiedUser.size() > 0) {
 		return veifiedUser.get(0);
-		
+		}
+		else {
+			return null;
+		}
+
+	}
+
+	public UserModel findUserByUsername(String username) {
+
+		List<UserModel> user = homeRepo.findAll();
+		List<UserModel> veifiedUser = user.stream().filter(n -> n.getUsername().equals(username)).collect(Collectors.toList());
+		if(veifiedUser.size() > 0) {
+		return veifiedUser.get(0);
+			}
+			else {
+				return null;
+			}
+
 	}
 
 	public void deleteUser(Long id) {
