@@ -57,7 +57,11 @@ public class UserService {
     }
 
     public int saveReserveHouse(ReserveModel reserve) {
-        // TODO Auto-generated method stub
+
+		if(reserve.getCoupon().equals("")) {
+			reserveRepo.save(reserve);
+			return 1;
+		}
 
         List<Coupon> coupons = couponRepo.findAll();
 
@@ -86,13 +90,11 @@ public class UserService {
     }
 
     public void savefavourites(FavouritesModel favourite) {
-        // TODO Auto-generated method stub
         favouritesRepo.save(favourite);
     }
 
 
     public void likeHouse(Long id) {
-        // TODO Auto-generated method stub
         HouseModel house = houseRepo.findHouseById(id);
         house.setLikes(house.getLikes() + 1);
         houseRepo.save(house);
