@@ -198,10 +198,14 @@ public class HouseOwnerController {
 	}
 	
 	@PostMapping("/report")
-	public String report(@ModelAttribute("report") ReportModel report)
+	public String report(@ModelAttribute("report") ReportModel report, Model model)
 	{
-		System.out.println("reported student");
+		System.out.println(report.getUserMail());
 		
+		if(report.getUserMail().equals("NA")) {
+			model.addAttribute("errormsg", "Please Select User Email");
+			return "home/error";
+		}
 		UserModel userdata = homeService.findUser(report.getUserMail());
 		report.setUserType(userdata.getUsertype());
 		houseOwnerService.saveReport(report);
