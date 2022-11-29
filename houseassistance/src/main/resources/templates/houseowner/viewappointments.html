@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>HO Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" style="color:white">Temporary Housing Assistance</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <th:block th:if="${role} =='houseowner'">
+          <li class="nav-item">
+            <a class="nav-link active" style="color:green" aria-current="page" href="/houseowner">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:green" aria-current="page" href="/createHouse">Post House</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:green" aria-current="page" href="/viewHouses">View Houses</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:green" aria-current="page" href="/reportStudent">Report Student</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:green" aria-current="page" href="/review">Post Review</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:green" aria-current="page" href="/ticket">Raise Ticket</a>
+          </li>
+        </th:block>
+
+      </ul>
+      <form class="d-flex" role="search">
+        <div class="dropdown me-2">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="bi bi-person-circle" style="color:white;"></i>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <button class="dropdown-item" type="button"><a href="/profile" style="color:black;text-decoration:none">Profile</a></button>
+            <button class="dropdown-item" type="button"><a href="/notifications" style="color:black;text-decoration:none">Notifications</a></button>
+            <button class="dropdown-item" type="button"><a href="/viewMessages" style="color:black;text-decoration:none">Messages</a></button>
+            <button class="dropdown-item" type="button"><a href="/viewFaqsHO" style="color:black;text-decoration:none">FAQs</a></button>
+            <button class="dropdown-item" type="button"><a href="/viewAppointments" style="color:black;text-decoration:none">Appointments</a></button>
+            <button class="dropdown-item" type="button"><a href="/myreviews" style="color:black;text-decoration:none">My Reviews</a></button>
+            <button class="dropdown-item" type="button"><a href="/propertyreviews" style="color:black;text-decoration:none">My Property Reviews</a></button>
+
+          </div>
+        </div>
+        <button class="btn btn-primary me-2"><a href="/destroy" style="color:white;text-decoration:none">Logout</a></button>
+      </form>
+    </div>
+  </div>
+</nav><br>
+
+<div class="container">
+  <br>
+  <div class="row">
+
+    <th:block th:each="appointment : ${appointments}">
+
+      <div class="card col-4 mt-3" style="margin:20px;">
+        <div class="card-horizontal">
+          <div class="card-body">
+            <h4 class="card-title">
+              Visit Date:
+              <th:block  th:text="${appointment.visitDate}">
+              </th:block>
+            </h4>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" >
+              Visit Type:
+              <th:block th:text="${appointment.type}">
+              </th:block>
+            </li>
+            <li class="list-group-item">
+              Visit Time:
+              <th:block th:text="${appointment.visitTime}">
+              </th:block>
+            </li>
+            <li class="list-group-item" >
+              User Id:
+              <th:block th:text="${appointment.userId}">
+              </th:block>
+            </li>
+            <li class="list-group-item" >
+              House Id:
+              <th:block th:text="${appointment.houseId}">
+              </th:block>
+            </li>
+
+          </ul>
+
+        </div>
+      </div>
+
+    </th:block>
+
+
+  </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
