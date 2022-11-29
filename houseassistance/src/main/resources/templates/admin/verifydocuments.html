@@ -14,11 +14,11 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-       <li class="nav-item">
+        <li class="nav-item">
            <a class="nav-link" style="color:green" aria-current="page" href="/admin">Home</a>
         </li>
       </ul>
-      <form class="d-flex" role="search">
+      <form class="d-flex" role="search">       
         <button class="btn btn-primary me-2"><a href="/login" style="color:white;text-decoration:none">Logout</a></button>
       </form>
     </div>
@@ -26,32 +26,28 @@
 </nav><br>
 <div class="container">
 
-  <center><h2 style="color:blue">Post Announcement</h2></center>
+  <center><h2 style="color:blue">Verify Houses</h2></center>
   <br>
-   <div class="col d-flex justify-content-center">
-  <div class="card" style="width: 28rem;">
-  <div class="card-body">
-  <form action="#" th:action=@{/postAnnouncement} th:object="${announcement}" method="post">
-    <div class="form-group">
-     <input type="text" class="form-control" placeholder="Enter Announcement Title" th:field="*{announcementTitle}" required/>
-    </div><br>
-    <div class="form-group">
-     <textarea class="form-control" placeholder="Enter Announcement Description"  th:field="*{announcementDescription}" required/>
-    </div><br>
-    <div class="form-group">
-    <label style="margin: 5px;">Start Date</label>
-     <input type="date" class="form-control" placeholder="Start Date"  th:field="*{startDate}" required/> 
-    </div><br>
-    <div class="form-group">
-     <label style="margin: 5px;">Start Time</label>
-     <input type="time" class="form-control" placeholder="Start Time"  th:field="*{startTime}" required/>
-    </div><br>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
-   </div>
-</div>
-</div>
-		
+  
+  <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">House Id</th>
+      <th scope="col">Download</th>
+      <th scope="col">Verify</th>
+    </tr>
+  </thead>
+  <tbody>
+  <th:block th:each="house : ${houses}">
+    <tr>
+      <td th:text="${house.Id}"></td>
+      <td><a th:href="@{'/downloadDoc/' + ${house.Id}}"><span th:text="Download"></span></a></td>
+      <td><a th:href="@{'/verifyHouse/' + ${house.Id}}" class="btn btn-danger">Verify</a></td>
+    </tr>
+  </th:block>
+  </tbody>
+</table>
+
 
 </div>
 </body>

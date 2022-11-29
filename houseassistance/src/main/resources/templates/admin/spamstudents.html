@@ -14,13 +14,11 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <!-- <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li> -->
+        <li class="nav-item">
+           <a class="nav-link" style="color:green" aria-current="page" href="/admin">Home</a>
+        </li>
       </ul>
       <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success me-2" type="submit">Search</button>       
         <button class="btn btn-primary me-2"><a href="/login" style="color:white;text-decoration:none">Logout</a></button>
       </form>
     </div>
@@ -28,23 +26,23 @@
 </nav><br>
 <div class="container">
 
-  <center><h2 style="color:blue">FAQS</h2></center>
+  <center><h2 style="color:blue">Spam Students</h2></center>
   <br>
   
   <table class="table table-hover">
   <thead>
     <tr>
-      <th scope="col">Question</th>
-      <th scope="col">Answer</th>
-      <th scope="col">Edit</th>
+      <th scope="col">Student Mail</th>
+      <th scope="col">Reason</th>
+      <th scope="col">Remove Student</th>
     </tr>
   </thead>
   <tbody>
-  <th:block th:each="faq : ${faqs}">
+  <th:block th:each="report : ${reports}">
     <tr>
-      <td th:text="${faq.question}"></td>
-      <td th:text="${faq.answer}"></td>
-      <td><a th:href="@{'/editFaq/' + ${faq.Id}}" class="btn btn-primary">Edit</a></td>
+      <td th:text="${report.userMail}"></td>
+      <td th:text="${report.reason}"></td>
+      <td><a th:href="@{'/removeStudent/' + ${report.Id}}" class="btn btn-danger">Remove</a></td>
     </tr>
   </th:block>
   </tbody>
