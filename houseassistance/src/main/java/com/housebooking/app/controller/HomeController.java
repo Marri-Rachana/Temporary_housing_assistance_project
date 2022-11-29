@@ -8,17 +8,35 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.housebooking.app.model.AddressModel;
 import com.housebooking.app.model.EmailModel;
 import com.housebooking.app.model.UserModel;
+import com.housebooking.app.model.UserProfileModel;
+import com.housebooking.app.model.UserSecurityModel;
 import com.housebooking.app.service.HomeService;
 
 @Controller
 public class HomeController {
+
+	@Autowired
+	private HomeService homeService;
+
+	@Autowired
+	private UserModel usermodel;
+
+	@Autowired
+	private EmailModel emailmodel;
 
 	public enum UserType{
 		HOME_OWNER("houseowner"),STUDENT("student"),ADMIN("admin");
@@ -33,11 +51,6 @@ public class HomeController {
 		}
 
 	}
-	@Autowired
-	private HomeService homeService;
-
-	@Autowired
-	private UserModel usermodel;
 
 	@GetMapping("/")
 	public String getHome(Model model)
@@ -46,23 +59,42 @@ public class HomeController {
 	}
 	
 	@GetMapping("/register")
-	public String getRegisterationPage(Model model)
+	public String getRegister(Model model)
 	{
 		model.addAttribute("user", usermodel);
 		return "home/register";
 	}
 
 	@PostMapping("/saveUser")
-	public String saveUser(@ModelAttribute("user") UserModel user,
-			@RequestParam("mobileno") String mobileNo,
-			@RequestParam("age") String age,
-			@RequestParam("address") String address, Model model)
+	public String saveUser(@ModelAttribute("user") UserModel user, @RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname,
+			@RequestParam("mobileNo") String mobileNo, @RequestParam("doorNo") String doorNo, @RequestParam("street") String street,
+			@RequestParam("city") String city, @RequestParam("zipCode") String zipCode,
+			@RequestParam("age") String age, @RequestParam("securityQuestion") String securityQuestion, @RequestParam("securityAnswer") String securityAnswer,
+			Model model)
 	{
 		System.out.println("save===user");
-		user.setUsername(user.getFirstname()+user.getLastname());
+
+
+		UserModel existingUser = homeService.findUser(user.getEmail());
+
+		if(existingUser != null) {
+			model.addAttribute("errormsg", "Email already exists");
+			return "home/error";
+		}
+
+		UserModel existingUsername = homeService.findUserByUsername(user.getUsername());
+
+		if(existingUsername != null) {
+			model.addAttribute("errormsg", "Username already exists");
+			return "home/error";
+		}
+
+
+
+
 		int output = homeService.saveUser(user);
-		homeService.saveUserProfile(age, address, user.getEmail());
-		homeService.saveUserContact(mobileNo, user.getEmail());
+		homeService.saveUserProfile(mobileNo, firstname, lastname, age, user.getEmail(), doorNo, street, city, zipCode);
+		homeService.saveUserSecurity(securityQuestion, securityAnswer, user.getEmail());
 
 		if(output > 0) {
 		return "redirect:/login";
@@ -73,16 +105,11 @@ public class HomeController {
 		}
 	}
 	
+
 	@GetMapping("/login")
 	public String getLoginPage(Model model,  HttpSession session, HttpServletRequest request)
-	{	
-		@SuppressWarnings("unchecked")
-		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
-
-		if (messages == null) {
-			messages = new ArrayList<>();
-		}
-		model.addAttribute("sessionMessages", messages);
+	{
+		request.getSession().invalidate();
 		model.addAttribute("user", usermodel);
 		return "home/login";
 	}
@@ -126,7 +153,7 @@ public class HomeController {
 			}
 		}
 		else {
-			model.addAttribute("errormsg", "Invalid Login Credentials. Please try again.");
+			model.addAttribute("errormsg", "Login Failed. Invalid Credentials. Please try again.");
 			return "home/error";
 		}
 		
@@ -155,8 +182,12 @@ public class HomeController {
 		System.out.println("save===usernew password");
 		System.out.println("userModel#########"+user.toString());
 		UserModel userModel=homeService.findUser(user.getEmail());
-		EmailModel emailmodel = new EmailModel();
-		emailmodel.setMsgBody("Your Username is"+ userModel.getFirstname()+" "+userModel.getLastname());
+
+		if(userModel == null) {
+			model.addAttribute("errormsg", "Email Id doesnot exist in our database");
+			return "home/error";
+		}
+		emailmodel.setMsgBody("Your Username is "+ userModel.getUsername());
 		emailmodel.setRecipient(userModel.getEmail());
 		emailmodel.setSubject("Username Recovery from HouseAssistance");
 		System.out.println("------------------body"+ emailmodel.getMsgBody()+"======="+ emailmodel.getRecipient());
@@ -164,29 +195,34 @@ public class HomeController {
 		
 		System.out.println("------------------"+ output);
 		if(output !=1) {
-			model.addAttribute("errmsg", "Email address does not exist.");
+			model.addAttribute("errmsg", "User Email address not found.");
 		}
 		return "redirect:/login";
 	}
 	
 	@PostMapping("/validateForgotPassword")
-	public String validatePassword(@ModelAttribute("user") UserModel user, Model model,RedirectAttributes redirectAttrs)
+	public String validatePassword(@ModelAttribute("user") UserModel user, @RequestParam("securityQuestion") String securityQuestion,
+			 @RequestParam("securityAnswer") String securityAnswer,
+			Model model,RedirectAttributes redirectAttrs)
 	{
 		System.out.println("forgot password**************************************** ");
-		String email="";
-		UserModel  userModel = homeService.validatePassword(user);
-		System.out.println("output=== "+userModel);
-		if(userModel != null)
+		int output = homeService.validatePassword(user, securityQuestion, securityAnswer);
+
+		if(output == 1)
 		{
-			email=userModel.getEmail();
-			System.out.println("email ***** "+email);
-			System.out.println(userModel);
-			model.addAttribute("user", userModel);
-			model.addAttribute("email",email);
+
 			return "home/changepassword";
 		}
+		else if(output == 0) {
+			model.addAttribute("errormsg", "Invalid User Email");
+			return "home/error";
+		}
+		else if(output == 2) {
+			model.addAttribute("errormsg", "Invalid Security Question or Answer");
+			return "home/error";
+		}
 		else {
-			model.addAttribute("errormsg", "Can't reset Your Password - Invalid Email/Security answers Entered");
+			model.addAttribute("errormsg", "Password cannot be changed. Invalid credentials.");
 			return "home/error";
 		}
 		
@@ -201,8 +237,16 @@ public class HomeController {
 	}
 	
 	@PostMapping("/saveNewPassword")
-	public String saveNewPassword(@ModelAttribute("user") UserModel user, HttpServletRequest request)
+	public String saveNewPassword(@ModelAttribute("user") UserModel user, HttpServletRequest request, @Param("confirmPassword") String confirmPassword, Model model)
 	{
+		if(confirmPassword.equals(user.getPassword())) {
+
+			homeService.saveNewPassword(user);
+		}
+		else {
+			model.addAttribute("errormsg", "Passwords donot match");
+			return "home/error";
+		}
 		System.out.println("save===usernew password");
 		System.out.println("userModel#########"+user.toString());
 		homeService.saveNewPassword(user);
@@ -225,16 +269,29 @@ public class HomeController {
 			return "home/error";
 		}
 		UserModel userdata = homeService.findUser(messages.get(0));
+		UserProfileModel userProfile = homeService.getUserProfile(userdata.getId());
+		UserSecurityModel userSecurity =  homeService.getUserSecurity(userdata.getId());
+		AddressModel userAddress = homeService.getUserAddress(userProfile.getId());
 		model.addAttribute("role", userdata.getUsertype());
 		model.addAttribute("user", userdata);
+		model.addAttribute("userProfile", userProfile);
+		model.addAttribute("userSecurity", userSecurity);
+		model.addAttribute("userAddress", userAddress);
         return "home/profile";
     }
 	
 	@PostMapping("/updateProfile")
-	public String updateProfile(@ModelAttribute("user") UserModel user, Model model)
+	public String updateProfile(@ModelAttribute("user") UserModel user, @RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname,
+			@RequestParam("mobileNo") String mobileNo, @RequestParam("doorNo") String doorNo, @RequestParam("street") String street,
+			@RequestParam("city") String city, @RequestParam("zipCode") String zipCode,
+			@RequestParam("age") String age, @RequestParam("securityQuestion") String securityQuestion, @RequestParam("securityAnswer") String securityAnswer, Model model)
 	{
 		System.out.println("save===user");
 		int output =homeService.saveUser(user);
+
+		homeService.updateUserAddress(user.getId(), doorNo, street, city, zipCode);
+		homeService.updateUserProfile(user.getId(), user.getEmail(), mobileNo,firstname, lastname, age);
+		homeService.updateUserSecurity(user.getId(), securityQuestion, securityAnswer);
 
 		if(output>0) {
 			return "redirect:/profile";
@@ -248,11 +305,12 @@ public class HomeController {
 	}
 	
 	@PostMapping("/deleteProfile/{id}")
-	public String deleteProfile(@PathVariable(name="id") Long id,HttpServletRequest request)
+	public String deleteProfile(@PathVariable(name="id") Long id,HttpServletRequest request, Model model)
 	{
 		homeService.deleteUser(id);
 		 request.getSession().invalidate();
-		return "redirect:/";
+		 model.addAttribute("errormsg", "Your Account Deleted Successfully");
+			return "home/error";
 	}
 	
 	@GetMapping("/resetPassword")
