@@ -38,8 +38,6 @@
         
       </ul>
       <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success me-2" type="submit">Search</button> 
 		<div class="dropdown me-2">
 		  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		     <i class="bi bi-person-circle" style="color:white;"></i>
@@ -47,7 +45,12 @@
 		  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
 		    <button class="dropdown-item" type="button"><a href="/profile" style="color:black;text-decoration:none">Profile</a></button>
 		    <button class="dropdown-item" type="button"><a href="/notifications" style="color:black;text-decoration:none">Notifications</a></button>
-		    <button class="dropdown-item" type="button"></button>
+		    <button class="dropdown-item" type="button"><a href="/viewMessages" style="color:black;text-decoration:none">Messages</a></button>
+		    <button class="dropdown-item" type="button"><a href="/viewFaqsHO" style="color:black;text-decoration:none">FAQs</a></button>
+		    <button class="dropdown-item" type="button"><a href="/viewAppointments" style="color:black;text-decoration:none">Appointments</a></button>
+		     <button class="dropdown-item" type="button"><a href="/myreviews" style="color:black;text-decoration:none">My Reviews</a></button>
+		    <button class="dropdown-item" type="button"><a href="/propertyreviews" style="color:black;text-decoration:none">My Property Reviews</a></button>
+
 		  </div>
 		</div>
 		<button class="btn btn-primary me-2"><a href="/destroy" style="color:white;text-decoration:none">Logout</a></button>
@@ -65,57 +68,118 @@
   
   	<input type="hidden" class="form-control" th:field="*{Id}" required/>
     <div class="form-group">
-    <label>Mail Id</label>
-     <input type="text" class="form-control" th:field="*{houseOwnerMail}" required/>
+        <div class="form-group">
+        <label><b>House Name</b></label>
+     <input type="text" class="form-control" placeholder="Enter House Name" th:value="${houseDetails.houseName}" name="houseName" required/>
     </div><br>
     <div class="form-group">
-    <label>Name</label>
-     <input type="text" class="form-control"  th:field="*{houseName}" required/>
+    <label><b>House Rent in $</b></label>
+      <input type="number" class="form-control" placeholder="Enter House Rent in dollars" th:value="${houseDetails.houseRent}" name="houseRent" required/>
     </div><br>
     <div class="form-group">
-    <label>Address</label>
-     <textarea class="form-control"  th:field="*{houseAddress}" required></textarea> 
+    <label><b>Number of Bedrooms</b></label>
+     <input type="number" class="form-control" placeholder="Enter Number of bed rooms" th:value="${houseDetails.noOfBedrooms}" name="noOfBedrooms" required/>
     </div><br>
     <div class="form-group">
-    <label>Details</label>
-     <textarea class="form-control"  th:field="*{houseDetails}" required></textarea> 
+    <label><b>Number of Bathrooms</b></label>
+     <input type="number" class="form-control" placeholder="Enter Number of bath rooms" th:value="${houseDetails.noOfBathrooms}" name="noOfBathrooms" required/>
     </div><br>
     <div class="form-group">
-    <label>Contact</label>
-     <input type="number" class="form-control" th:field="*{houseContact}" required/>
+    <label><b>Door No</b></label>
+     <input type="text" class="form-control" placeholder="Enter Door No" th:value="${houseAddress.doorNo}"  name="doorNo" required/>
     </div><br>
     <div class="form-group">
-    <label>Rent</label>
-      <input type="number" class="form-control" th:field="*{houseRent}" required/>
+    <label><b>Street</b></label>
+     <input type="text" class="form-control" placeholder="Enter Street Name" th:value="${houseAddress.street}" name="street" required/>
     </div><br>
     <div class="form-group">
-    <label>House Photo</label>
-      <input type="file" class="form-control" name="image" accept="image/png, image/jpeg"/>
-    </div><br>
-    <div class="form-group">
-    <label>House Type</label>
-     <select th:field="*{houseType}" class="form-control">
-     <option th:value="null">Select House Type</option>
-    <option th:value="1bhk">1BHK</option>
-    <option th:value="2bhk">2BHK</option>
-    <option th:value="1bhk">3BHK</option>
-    <option th:value="2bhk">4BHK</option>
+     <label><b>City</b></label>
+     <select name="city" class="form-control" >
+     <option th:value="null">Select City</option>
+    <option th:value="newyork">New York</option>
+    <option th:value="losangeles">Los Angeles</option>
+    <option th:value="chicago">Chicago</option>
+    <option th:value="houston">Houston</option>
+    <option th:value="sandiego">San Diego</option>
+    <option th:value="dallas">Dallas</option>
+    <option th:value="austin">Austin</option>
+    <option th:value="nashville">Nashville</option>
     </select>
     </div><br>
     <div class="form-group">
-    <label>Is your House Booked?</label>
-     <select th:field="*{isBooked}" class="form-control">
+    <label><b>Zip Code</b></label>
+     <input type="text" class="form-control" placeholder="Enter Zip Code" th:value="${houseAddress.zipCode}" name="zipCode" required/>
+    </div><br>
+    <div class="form-group">
+    <label><b>House Document</b></label>
+      <input type="file" class="form-control" name="doc" accept="application/pdf"/>
+    </div><br>
+    <div class="form-group">
+    <label><b>House Image</b></label>
+      <input type="file" class="form-control" name="image" accept="image/png, image/jpeg"/>
+    </div><br>
+    <div class="form-group">
+    <label><b>House Type</b></label>
+     <select th:field="*{houseType}" class="form-control" required>
+     <option th:value="null">Select House Type</option>
+    <option th:value="1bhk">1BHK</option>
+    <option th:value="2bhk">2BHK</option>
+    <option th:value="3bhk">3BHK</option>
+    <option th:value="4bhk">4BHK</option>
+    </select>
+    </div><br>
+    <div class="form-group">
+    <label><b>Parking</b></label>
+   <select name="parking" class="form-control">
+     <option th:value="null">Parking slot Availability</option>
+     <option th:value="yes">yes</option>
+     <option th:value="no">no</option>
+    </select>
+    </div>
+    <br>
+
+     <div class="form-group">
+     <label><b>Pet Friendly</b></label>
+   <select name="petFriendly" class="form-control">
+     <option th:value="null">Pet Friendly</option>
+     <option th:value="yes">yes</option>
+     <option th:value="no">no</option>
+    </select>
+    </div>
+    <br>
+
+     <div class="form-group">
+     <label><b>Lawn Availability</b></label>
+   <select name="lawn" class="form-control">
+     <option th:value="null">Lawn Availability</option>
+     <option th:value="yes">yes</option>
+     <option th:value="no">no</option>
+    </select>
+    </div>
+    <br>
+
+     <div class="form-group">
+     <label><b>Hide Status</b></label>
+   <select name="isHide" class="form-control">
+     <option th:value="null">Select Hide Status</option>
+     <option th:value="1">Hide</option>
+     <option th:value="0">unHide</option>
+    </select>
+    </div>
+    <br>
+
+     <div class="form-group">
+     <label><b>Booking Status</b></label>
+   <select name="isBooked" class="form-control">
+     <option th:value="null">Select Booking Status</option>
+     <option th:value="1">Booked</option>
     <option th:value="0">Not Booked</option>
-    <option th:value="1">Booked</option>
     </select>
     </div><br>
     
     <div class="form-group">
-    <label>Want to Hide House?</label>
-     <select th:field="*{isHide}" class="form-control">
-    <option th:value="0">No</option>
-    <option th:value="1">Yes</option>
-    </select>
+    <label><b>Availale From</b></label>
+      <input type="date" class="form-control" th:value="${houseDetails.availableFrom}" name="availableFrom" required/>
     </div><br> 
     <button type="submit" class="btn btn-primary">Update</button>
   </form>
