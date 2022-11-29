@@ -1,11 +1,8 @@
 package com.housebooking.app.controller;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import com.housebooking.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,8 +11,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.housebooking.app.model.Announcement;
+import com.housebooking.app.model.Coupon;
+import com.housebooking.app.model.FAQModel;
+import com.housebooking.app.model.ReportModel;
+import com.housebooking.app.model.TicketModel;
+import com.housebooking.app.model.UserModel;
 import com.housebooking.app.service.AdminService;
 import com.housebooking.app.service.HomeService;
+import com.housebooking.app.service.HouseOwnerService;
 
 @Controller
 public class AdminController {
@@ -26,38 +30,48 @@ public class AdminController {
 	@Autowired
 	private HomeService homeService;
 
+	@Autowired
+	private HouseOwnerService houseOwnerService;
+
+	@Autowired
+	private Announcement announcement;
+
+	@Autowired
+	private FAQModel faq;
+
+	@Autowired
+	private Coupon coupon;
+
 	@GetMapping("/admin")
 	public String getAdminWelcomePage(@ModelAttribute("user") UserModel user, Model model, HttpSession session)
 	{
 		@SuppressWarnings("unchecked")
-		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
 
-		if (messages == null) {
+		if(messages == null) {
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-		model.addAttribute("sessionMessages", messages);
-		UserModel userdata = homeService.findUser(messages.get(0));
-		model.addAttribute("role", userdata.getUsertype());
+        model.addAttribute("sessionMessages", messages);
+        model.addAttribute("role", "admin");
 		return "admin/welcomeadmin";
 	}
 
-	@GetMapping("/announcement")
-	public String getAnnouncementPage(Model model) {
 
-		Announcement announcement = new Announcement();
-
-		model.addAttribute("announcement", announcement);
-		return "admin/addannouncement";
+	@GetMapping("/faqs")
+	public String getFaqPage(Model model) {
+		return "admin/faqs";
 
 	}
 
-	@PostMapping("/postAnnouncement")
-	public String postAnnouncement(@ModelAttribute("announcement") Announcement announcement) {
 
-		adminService.addAnnouncement(announcement);
 
-		return "redirect:/admin";
+	@GetMapping("/spamStudents")
+	public String getSpamStudents(Model model) {
+
+		List<ReportModel> studentReports = adminService.findAllStudentReports();
+		model.addAttribute("reports", studentReports);
+		return "admin/spamstudents";
 
 	}
 
@@ -70,6 +84,14 @@ public class AdminController {
 
 	}
 
+	@GetMapping("/removeStudent/{id}")
+	public String removeSpamStudents(Model model, @PathVariable("id") Long id) {
+		System.out.println("id==== "+id);
+		adminService.removeStudent(id);
+		return "redirect:/admin";
+
+	}
+
 	@GetMapping("/removeTicket/{id}")
 	public String removeTicket(Model model, @PathVariable("id") Long id) {
 		System.out.println("id==== "+id);
@@ -78,16 +100,45 @@ public class AdminController {
 
 	}
 
-	@GetMapping("/faqs")
-	public String getFaqPage(Model model) {
-		return "admin/faqs";
+
+
+	@GetMapping("/spamHouses")
+	public String getSpamHouses(Model model) {
+
+		List<ReportModel> houseReports = adminService.findAllHousesReports();
+		model.addAttribute("reports", houseReports);
+		return "admin/spamowners";
+
+	}
+
+	@GetMapping("/removeHouse/{id}")
+	public String removeSpamHouses(Model model, @PathVariable("id") Long id) {
+
+		adminService.removeHouse(id);
+		return "redirect:/admin";
+
+	}
+
+	@GetMapping("/announcement")
+	public String getAnnouncementPage(Model model) {
+
+		model.addAttribute("announcement", announcement);
+		return "admin/addannouncement";
+
+	}
+
+
+	@PostMapping("/postAnnouncement")
+	public String postAnnouncement(@ModelAttribute("announcement") Announcement announcement) {
+
+		adminService.addAnnouncement(announcement);
+
+		return "redirect:/admin";
 
 	}
 
 	@GetMapping("/createFaq")
 	public String createFaqPage(Model model) {
-
-		FAQModel faq = new FAQModel();
 
 		model.addAttribute("faq", faq);
 		return "admin/addfaq";
@@ -130,51 +181,19 @@ public class AdminController {
 
 	}
 
-	@GetMapping("/spamStudents")
-	public String getSpamStudents(Model model) {
-
-		List<ReportModel> studentReports = adminService.findAllStudentReports();
-		model.addAttribute("reports", studentReports);
-		return "admin/spamstudents";
-
-	}
-
-	@GetMapping("/removeStudent/{id}")
-	public String removeSpamStudents(Model model, @PathVariable("id") Long id) {
-		System.out.println("id==== "+id);
-		adminService.removeStudent(id);
-		return "redirect:/admin";
-
-	}
 	@GetMapping("/coupon")
 	public String viewCouponPage(Model model) {
 
-		Coupon coupon = new Coupon();
 		model.addAttribute("coupon",coupon);
 		return "admin/coupon";
 
 	}
+
 	@PostMapping("/postCoupon")
 	public String updateFaq(@ModelAttribute("coupon") Coupon coupon) {
 
 		adminService.addCoupon(coupon);
 
-		return "redirect:/admin";
-
-	}
-	@GetMapping("/spamHouses")
-	public String getSpamHouses(Model model) {
-
-		List<ReportModel> houseReports = adminService.findAllHousesReports();
-		model.addAttribute("reports", houseReports);
-		return "admin/spamowners";
-
-	}
-
-	@GetMapping("/removeHouse/{id}")
-	public String removeSpamHouses(Model model, @PathVariable("id") Long id) {
-
-		adminService.removeHouse(id);
 		return "redirect:/admin";
 
 	}
