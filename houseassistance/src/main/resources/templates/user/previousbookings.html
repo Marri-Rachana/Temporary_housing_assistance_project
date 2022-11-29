@@ -26,6 +26,9 @@
           <a class="nav-link" style="color:green" aria-current="page" href="/reviewOwner">Review Owner</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" style="color:green" aria-current="page" href="/reviewProperty">Review Property</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" style="color:green" aria-current="page" href="/reviewapp">Post Review</a>
         </li>
         <li class="nav-item">
@@ -72,29 +75,24 @@
 
 <th:block th:each="booking : ${bookings}">
 
- 			<div class="card col-3 mt-3" style="margin:20px;">
+ 			<div class="card col-4 mt-3" style="margin:20px;">
                 <div class="card-horizontal">
                     <div class="card-body">
                         <h4 class="card-title">
-                         Details:
-     						<th:block  th:text="${booking.houseDetails}">
+                        Move In Date:
+     						<th:block  th:text="${booking.moveInDate}">
      						</th:block>
                         </h4>
                     </div>
                     <ul class="list-group list-group-flush">
 					     <li class="list-group-item">
-					      Date:
-     						<th:block th:text="${booking.visitDate}">
+					     House Rent to be paid:
+     						<th:block th:text="${booking.houseRent} + '$'">
      						</th:block>
 					     </li>
 					    <li class="list-group-item"  >
-					    Time:
-     						<th:block th:text="${booking.visitTime}">
-     						</th:block>
-					    </li>
-					    <li class="list-group-item" >
-					     Type:
-     						<th:block th:text="${booking.type}">
+					     House Id:
+     						<th:block th:text="${booking.houseId}">
      						</th:block>
 					    </li>
   					</ul>

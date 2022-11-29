@@ -26,6 +26,9 @@
           <a class="nav-link" style="color:green" aria-current="page" href="/reviewOwner">Review Owner</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" style="color:green" aria-current="page" href="/reviewProperty">Review Property</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" style="color:green" aria-current="page" href="/reviewapp">Post Review</a>
         </li>
         <li class="nav-item">
@@ -67,7 +70,7 @@
   </div>
 </nav><br>
 <div class="container">
- <center><h2 style="color:blue">Report Owner & House</h2></center>
+ <center><h2 style="color:blue">Review House Owner</h2></center>
   <br>
    <div class="col d-flex justify-content-center">
   <div class="card" style="width: 28rem;">
@@ -82,14 +85,7 @@
     <option th:each="owner : ${owners}" th:value="${owner.email}" th:text="${owner.email}"></option>
     </select>
     </div><br>
-    
-    <div class="form-group">
-    <label>House</label>
-     <select class="form-control" th:field="*{houseName}"  id="dropOperator" required>
-    <option value="0">Select House</option>
-    <option th:each="house : ${houses}" th:value="${house.houseName}" th:text="${house.houseName}"></option>
-    </select>
-    </div><br>
+
     <div class="form-group">
     <label>Rating</label>
      <select class="form-control" th:field="*{rating}"  id="dropOperator" required>
