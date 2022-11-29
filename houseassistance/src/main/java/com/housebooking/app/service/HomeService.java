@@ -1,10 +1,8 @@
 package com.housebooking.app.service;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.housebooking.app.dao.AnnouncementRepo;
-import com.housebooking.app.dao.UserContactRepo;
 import com.housebooking.app.dao.UserProfileRepo;
 import com.housebooking.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
