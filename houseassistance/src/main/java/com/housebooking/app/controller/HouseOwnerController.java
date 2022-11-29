@@ -1,21 +1,13 @@
 package com.housebooking.app.controller;
 
-import java.io.IOException;
-
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.housebooking.app.model.*;
-import com.housebooking.app.service.AdminService;
-import com.housebooking.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,9 +15,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.housebooking.app.model.AddressModel;
+import com.housebooking.app.model.Announcement;
+import com.housebooking.app.model.AppointmentModel;
+import com.housebooking.app.model.FAQModel;
+import com.housebooking.app.model.HouseAttributesModel;
+import com.housebooking.app.model.HouseDetailsModel;
+import com.housebooking.app.model.HouseModel;
+import com.housebooking.app.model.MessageModel;
+import com.housebooking.app.model.ReportModel;
+import com.housebooking.app.model.ReviewModel;
+import com.housebooking.app.model.TicketModel;
+import com.housebooking.app.model.UserModel;
+import com.housebooking.app.model.UserProfileModel;
+import com.housebooking.app.service.AdminService;
 import com.housebooking.app.service.HomeService;
 import com.housebooking.app.service.HouseOwnerService;
-import com.housebooking.app.utils.FileUploadUtil;
+import com.housebooking.app.service.UserService;
 
 @Controller
 public class HouseOwnerController {
@@ -42,17 +48,17 @@ public class HouseOwnerController {
 	private UserService userService;
 
 	@Autowired
-	private ReviewModel review;
+	private ReportModel report;
 
 	@Autowired
 	private HouseModel house;
 
 	@Autowired
-	private ReportModel report;
+	private ReviewModel review;
 
 	@Autowired
 	private TicketModel ticket;
-	
+
 	@GetMapping("/houseowner")
 	public String getHouseOwnerWelcomePage(@ModelAttribute("user") UserModel user, Model model, HttpSession session)
 	{
@@ -85,8 +91,13 @@ public class HouseOwnerController {
 	}
 	
 	@PostMapping("/saveHouse")
-	public String saveHouseBooking(@ModelAttribute("house") HouseModel house, @RequestParam("image") MultipartFile multipartFile
-			, @RequestParam("doc") MultipartFile doc, Model model, HttpSession session)
+	public String saveHouse(@ModelAttribute("house") HouseModel house, @RequestParam("image") MultipartFile houseImage,
+			@RequestParam("houseName") String houseName, @RequestParam("houseRent") String houseRent, @RequestParam("noOfBedrooms") String noOfBedrooms,
+			@RequestParam("noOfBathrooms") String noOfBathrooms,
+			@RequestParam("doorNo") String doorNo, @RequestParam("street") String street, @RequestParam("city") String city,
+			@RequestParam("zipCode") String zipCode, @RequestParam("parking") String parking, @RequestParam("petFriendly") String petFriendly,
+			@RequestParam("lawn") String lawn, @RequestParam("availableFrom") String availableFrom,
+			@RequestParam("doc") MultipartFile doc, Model model, HttpSession session)
 	{
 		System.out.println("house created");
 		@SuppressWarnings("unchecked")
@@ -98,21 +109,12 @@ public class HouseOwnerController {
 		}
         model.addAttribute("sessionMessages", messages);
         UserModel userdata = homeService.findUser(messages.get(0));
-		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+
+        UserProfileModel userProfile = homeService.getUserProfile(userdata.getId());
 		
-		try {
-			house.setHousePhoto(Base64.getEncoder().encodeToString(multipartFile.getBytes()));
-			house.setDocument(Base64.getEncoder().encodeToString(doc.getBytes()));
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-		house.setHouseOwnerMail(userdata.getEmail());
-		house.setIsBooked("0");
-		house.setIsHide("0");
-		house.setLikes(0);
-		house.setDislikes(0);
-		houseOwnerService.saveHouse(house);
+
+		houseOwnerService.saveHouse(house, userdata.getEmail(), houseImage, doc, houseName,
+				houseRent, userProfile.getMobileNo(), noOfBedrooms, noOfBathrooms, doorNo, street, city, zipCode, parking, petFriendly, lawn, availableFrom);
 		
 		return "redirect:/houseowner";
 	}
@@ -128,12 +130,39 @@ public class HouseOwnerController {
 			return "home/error";
 		}
 		UserModel userdata = homeService.findUser(messages.get(0));
-		List<HouseModel> houses = houseOwnerService.getAllHousesByEmail(userdata.getEmail());
+		List<HouseDetailsModel> houses = houseOwnerService.getAllHousesDetailsByEmail(userdata.getEmail());
 		model.addAttribute("houses", houses);
+		model.addAttribute("houseOwnerMail", userdata.getEmail());
 		model.addAttribute("role", userdata.getUsertype());
 		return "houseowner/displayhouses";
 	}
 	
+	@GetMapping("/viewSingleHouse/{id}")
+	public String viewSingleHouse(Model model, HttpSession session, @PathVariable(name="id") Long id) {
+
+
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		HouseModel house = houseOwnerService.getHouseById(id);
+
+		HouseDetailsModel houseDetails = houseOwnerService.getHouseDetailsById(id);
+		HouseAttributesModel houseAttributes = houseOwnerService.getHouseAttributes(id);
+		AddressModel houseAddress = houseOwnerService.getHouseAddress(id);
+
+		model.addAttribute("house", house);
+		model.addAttribute("houseDetails", houseDetails);
+		model.addAttribute("houseAttributes", houseAttributes);
+		model.addAttribute("houseAddress", houseAddress);
+
+		model.addAttribute("role", userdata.getUsertype());
+		return "houseowner/displaysinglehouse";
+	}
+
 	@GetMapping("/editHouse/{id}")
 	public String editHouse(Model model, HttpSession session, @PathVariable(name="id") Long id) {
 		
@@ -145,27 +174,47 @@ public class HouseOwnerController {
 			return "home/error";
 		}
 		UserModel userdata = homeService.findUser(messages.get(0));
-		HouseModel house = houseOwnerService.getHouseById(id);
-		System.out.println(house.getHouseName());
+        HouseModel house = houseOwnerService.getHouseById(id);
+
+		HouseDetailsModel houseDetails = houseOwnerService.getHouseDetailsById(id);
+		HouseAttributesModel houseAttributes = houseOwnerService.getHouseAttributes(id);
+		AddressModel houseAddress = houseOwnerService.getHouseAddress(id);
+
 		model.addAttribute("house", house);
+		model.addAttribute("houseDetails", houseDetails);
+		model.addAttribute("houseAttributes", houseAttributes);
+		model.addAttribute("houseAddress", houseAddress);
 		model.addAttribute("role", userdata.getUsertype());
 
 		return "houseowner/updatehouse";
 	}
 	
 	@PostMapping("/updateHouse")
-	public String updateHouse(@ModelAttribute("house") HouseModel house, @RequestParam("image") MultipartFile multipartFile)
+	public String updateHouse(@ModelAttribute("house") HouseModel house, @RequestParam("image") MultipartFile houseImage,
+			@RequestParam("houseName") String houseName, @RequestParam("houseRent") String houseRent, @RequestParam("noOfBedrooms") String noOfBedrooms,
+			@RequestParam("noOfBathrooms") String noOfBathrooms,
+			@RequestParam("doorNo") String doorNo, @RequestParam("street") String street, @RequestParam("city") String city,
+			@RequestParam("zipCode") String zipCode, @RequestParam("parking") String parking, @RequestParam("petFriendly") String petFriendly,
+			@RequestParam("lawn") String lawn, @RequestParam("isHide") String isHide, @RequestParam("isBooked") String isBooked,
+			@RequestParam("availableFrom") String availableFrom,
+			@RequestParam("doc") MultipartFile doc, Model model, HttpSession session)
 	{
 		System.out.println("house updated");
-		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+
+		UserProfileModel userProfile = homeService.getUserProfile(userdata.getId());
+
 		
-		try {
-			house.setHousePhoto(Base64.getEncoder().encodeToString(multipartFile.getBytes()));
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-		houseOwnerService.saveHouse(house);
+		houseOwnerService.updateHouse(house, userdata.getEmail(), houseImage, doc, houseName,
+				houseRent, userProfile.getMobileNo(), noOfBedrooms, noOfBathrooms, doorNo, street,
+				city, zipCode, parking, petFriendly, lawn, isHide, isBooked, availableFrom);
+
 		
 		return "redirect:/houseowner";
 	}
@@ -178,6 +227,27 @@ public class HouseOwnerController {
 		return "redirect:/houseowner";
 	}
 	
+
+	@GetMapping("/viewAppointments")
+	public String viewAppointments(Model model, HttpSession session)
+	{
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+        model.addAttribute("sessionMessages", messages);
+        UserModel userdata = homeService.findUser(messages.get(0));
+        model.addAttribute("role", userdata.getUsertype());
+
+        List<AppointmentModel> appointments = userService.getAllAppointmentsByUserId(userdata.getEmail());
+
+        model.addAttribute("appointments", appointments);
+		return "houseowner/viewappointments";
+	}
+
 	@GetMapping("/reportStudent")
 	public String reportStudent(Model model, HttpSession session) {
 		
@@ -207,6 +277,7 @@ public class HouseOwnerController {
 			return "home/error";
 		}
 		UserModel userdata = homeService.findUser(report.getUserMail());
+
 		report.setUserType(userdata.getUsertype());
 		houseOwnerService.saveReport(report);
 		
