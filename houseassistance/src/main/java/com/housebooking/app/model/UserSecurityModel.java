@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "user_contacts")
+@Table(name = "user_security")
 public class UserSecurityModel {
 
     @Id
