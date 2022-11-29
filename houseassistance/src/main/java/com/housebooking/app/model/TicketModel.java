@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 @Table(name = "tickets")
 public class TicketModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
-    private String userMail;
-    private String description;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long Id;
+	private String userMail;
+	private String description;
 
 
 }

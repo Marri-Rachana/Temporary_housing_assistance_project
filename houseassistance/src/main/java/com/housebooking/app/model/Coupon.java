@@ -23,6 +23,7 @@ public class Coupon {
 	private String couponTitle;
 	private String couponCode;
 	private String startDate;
+	private String discountAmount;
 	private String endDate;
 	
 }
