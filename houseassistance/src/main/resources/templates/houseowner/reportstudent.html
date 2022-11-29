@@ -47,7 +47,12 @@
 		  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
 		    <button class="dropdown-item" type="button"><a href="/profile" style="color:black;text-decoration:none">Profile</a></button>
 		    <button class="dropdown-item" type="button"><a href="/notifications" style="color:black;text-decoration:none">Notifications</a></button>
-		    <button class="dropdown-item" type="button"></button>
+		    <button class="dropdown-item" type="button"><a href="/viewMessages" style="color:black;text-decoration:none">Messages</a></button>
+		    <button class="dropdown-item" type="button"><a href="/viewFaqsHO" style="color:black;text-decoration:none">FAQs</a></button>
+		    <button class="dropdown-item" type="button"><a href="/viewAppointments" style="color:black;text-decoration:none">Appointments</a></button>
+		     <button class="dropdown-item" type="button"><a href="/myreviews" style="color:black;text-decoration:none">My Reviews</a></button>
+		    <button class="dropdown-item" type="button"><a href="/propertyreviews" style="color:black;text-decoration:none">My Property Reviews</a></button>
+
 		  </div>
 		</div>
 		<button class="btn btn-primary me-2"><a href="/destroy" style="color:white;text-decoration:none">Logout</a></button>
@@ -67,7 +72,7 @@
     <div class="form-group">
     <label>Student</label>
      <select class="form-control" th:field="*{userMail}"  id="dropOperator" required>
-    <option value="0">Select Student</option>
+    <option value="NA">Select Student</option>
     <option th:each="student : ${students}" th:value="${student.email}" th:text="${student.email}"></option>
     </select>
     </div><br>
