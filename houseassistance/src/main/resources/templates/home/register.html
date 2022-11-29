@@ -19,8 +19,7 @@
         </li> -->
       </ul>
       <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success me-2" type="submit">Search</button>       
+
         <button class="btn btn-primary me-2"><a href="/login" style="color:white;text-decoration:none">Login</a></button>
       </form>
     </div>
@@ -34,13 +33,16 @@
   <div class="card-body">
   <form action="#" th:action=@{/saveUser} th:object="${user}" method="post">
     <div class="form-group">
-     <input type="text" class="form-control" placeholder="Enter firstname" th:field="*{firstname}" required/>
+     <input type="text" class="form-control" placeholder="Enter firstname" name="firstname" required/>
     </div><br>
     <div class="form-group">
-     <input type="text" class="form-control" placeholder="Enter lastname"  th:field="*{lastname}" required/>
+     <input type="text" class="form-control" placeholder="Enter lastname"  name="lastname" required/>
     </div><br>
     <div class="form-group">
-     <input type="number" class="form-control" placeholder="Enter mobileNo"  name="mobileno"  maxlength="10" required/>
+     <input type="text" class="form-control" placeholder="Enter username"  th:field="*{username}" required/>
+    </div><br>
+    <div class="form-group">
+     <input type="text" class="form-control" placeholder="Enter mobileNo"  name="mobileNo"  maxlength="10" minlength="10" title="Please enter exactly 10 digits" pattern="\d{10}" required/>
     </div><br>
     <div class="form-group">
      <input type="email" class="form-control" placeholder="Enter email"  th:field="*{email}" required/>
@@ -50,11 +52,23 @@
     </div><br>
 
     <div class="form-group">
-      <textarea class="form-control" placeholder="Enter Address" name="address" required></textarea>
+     <input type="text" class="form-control" placeholder="Enter Door No"  name="doorNo" required/>
     </div><br>
 
     <div class="form-group">
-      <input type="number" class="form-control" placeholder="Enter Age"  name="age" required/>
+     <input type="text" class="form-control" placeholder="Enter Street Name"  name="street" required/>
+    </div><br>
+
+    <div class="form-group">
+     <input type="text" class="form-control" placeholder="Enter City Name"  name="city" required/>
+    </div><br>
+
+    <div class="form-group">
+     <input type="text" class="form-control" placeholder="Enter Zip Code"  name="zipCode" required/>
+    </div><br>
+
+    <div class="form-group">
+      <input type="number" class="form-control" placeholder="Enter Age"  name="age" min="10" max="99" required/>
     </div><br>
     <div class="form-group">
      <select th:field="*{usertype}" class="form-control" required>
@@ -64,7 +78,7 @@
     </select>
     </div><br>
     <div class="form-group">
-    <select th:field="*{securityQuestion}" class="form-control" required>
+    <select name="securityQuestion" class="form-control" required>
      <option th:value="null">Select your Security Question</option>
     <option th:value="birthlocation">Where is your birth location</option>
     <option th:value="god">Who is your favorite God</option>
@@ -72,7 +86,7 @@
     </select>
     </div><br>
     <div class="form-group">
-     <input type="text" class="form-control" placeholder="Enter Security Answer"  th:field="*{securityAnswer}" required/>
+     <input type="text" class="form-control" placeholder="Enter Security Answer"  name="securityAnswer" required/>
     </div><br>
     <button type="submit" class="btn btn-primary">Register</button>
   </form>

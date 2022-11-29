@@ -7,7 +7,6 @@
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
    <style>
 	   label{
-	   color:blue;
 	   font-weight:bold;
 	   }
    </style>
@@ -34,6 +33,9 @@
         </li>
          <li class="nav-item">
           <a class="nav-link" style="color:green" aria-current="page" href="/reviewOwner">Review Owner</a>
+        </li>
+            <li class="nav-item">
+          <a class="nav-link" style="color:green" aria-current="page" href="/reviewProperty">Review Property</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" style="color:green" aria-current="page" href="/reviewapp">Post Review</a>
@@ -64,8 +66,10 @@
       </th:block>
       </ul>
       <form class="d-flex" role="search">
+         <th:block th:if="${role} =='student'">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success me-2" type="submit">Search</button> 
+        </th:block>
 		<div class="dropdown me-2">
 		  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		     <i class="bi bi-person-circle" style="color:white;"></i>
@@ -100,35 +104,69 @@
 	  </div><hr>
 	  <form action="#" th:action=@{/updateProfile} th:object="${user}" method="post">
 	     <input type="hidden" class="form-control" placeholder="" th:field="*{Id}" required/>
-	     <div class="form-group">
-	     <label>User Name</label>
-	     <input type="text" class="form-control" placeholder=""  th:field="*{username}" required/>
-	    </div><br>
-	    <div class="form-group">
-	    <label>First Name</label>
-	     <input type="text" class="form-control" placeholder="" th:field="*{firstname}" required/>
-	    </div><br>
-	    <div class="form-group">
-	    <label>Last Name</label>
-	     <input type="text" class="form-control" placeholder=""  th:field="*{lastname}" required/>
-	    </div><br>
 
-	     <input type="hidden" class="form-control" placeholder=""  th:field="*{email}" required/>
-	      <input type="hidden" class="form-control" placeholder=""  th:field="*{password}" required/>
-	      <input type="hidden" class="form-control" placeholder=""  th:field="*{usertype}" required/>
-	    <div class="form-group">
-	    <label>Security Question</label>
-	    <select th:field="*{securityQuestion}" class="form-control">
-	     <option th:value="null">Select your Security Question</option>
-	    <option th:value="birthlocation">Where is your birth location</option>
-	    <option th:value="god">Who is your favorite God</option>
-	    <option th:value="school">What is your first school name</option>
-	    </select>
-	    </div><br>
-	    <div class="form-group">
-	    <label>Security Answer</label>
-	     <input type="text" class="form-control" placeholder="Enter Security Answer"  th:field="*{securityAnswer}"/>
-	    </div><br>
+	     <div class="form-group">
+	     <label>Firstname</label>
+     <input type="text" class="form-control" placeholder="Enter firstname" name="firstname" th:value="${userProfile.firstname}" required/>
+    </div><br>
+    <div class="form-group">
+
+	     <label>Lastname</label>
+     <input type="text" class="form-control" placeholder="Enter lastname"  name="lastname" th:value="${userProfile.lastname}" required/>
+    </div><br>
+
+     <input type="hidden" class="form-control" placeholder="Enter username"  th:field="*{username}" required/>
+
+    <div class="form-group">
+      <label>Mobile Number</label>
+     <input type="text" class="form-control" placeholder="Enter mobileNo" th:value="${userProfile.mobileNo}"  name="mobileNo"  maxlength="10" minlength="10" title="Please enter exactly 10 digits" pattern="\d{10}" required/>
+    </div><br>
+
+     <input type="hidden" class="form-control" placeholder="Enter email"  th:field="*{email}" required/>
+
+
+      <input type="hidden" class="form-control" th:field="*{password}" required/>
+ 		<input type="hidden" class="form-control" th:field="*{usertype}" required/>
+
+
+    <div class="form-group">
+      <label>Door No</label>
+     <input type="text" class="form-control" placeholder="Enter Door No" name="doorNo"   th:value="${userAddress.doorNo}" required/>
+    </div><br>
+
+    <div class="form-group">
+      <label>Street Name</label>
+     <input type="text" class="form-control" placeholder="Enter Street Name" name="street" th:value="${userAddress.street}" required/>
+    </div><br>
+
+    <div class="form-group">
+      <label>City</label>
+     <input type="text" class="form-control" placeholder="Enter City Name"  name="city" th:value="${userAddress.city}" required/>
+    </div><br>
+
+    <div class="form-group">
+      <label>Zip Code</label>
+     <input type="text" class="form-control" placeholder="Enter Zip Code"  name="zipCode" th:value="${userAddress.zipCode}" required/>
+    </div><br>
+
+    <div class="form-group">
+      <label>Age</label>
+      <input type="number" class="form-control" placeholder="Enter Age" th:value="${userProfile.age}" name="age" min="10" max="99" required/>
+    </div><br>
+
+    <div class="form-group">
+      <label>Security Question</label>
+    <select name="securityQuestion" class="form-control" required>
+     <option th:value="null">Select your Security Question</option>
+    <option th:value="birthlocation">Where is your birth location</option>
+    <option th:value="god">Who is your favorite God</option>
+    <option th:value="school">What is your first school name</option>
+    </select>
+    </div><br>
+    <div class="form-group">
+      <label>Security Answer</label>
+     <input type="text" class="form-control" placeholder="Enter Security Answer" th:value="${userSecurity.securityAnswer}"  name="securityAnswer" required/>
+    </div><br>
 	    <button type="submit" class="btn btn-primary">Update Profile</button>
 	     <button class="btn btn-primary" style="float:right"><a href="/resetPassword" style="color:white;text-decoration:none">Reset Password</a></button>
 	  </form>
