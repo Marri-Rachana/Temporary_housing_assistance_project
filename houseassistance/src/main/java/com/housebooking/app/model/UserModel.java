@@ -23,6 +23,7 @@ import javax.persistence.UniqueConstraint;
 @Setter
 @Component
 public class UserModel {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
@@ -42,15 +43,7 @@ public class UserModel {
 
 	@Override
 	public String toString() {
-		return "UserModel{" +
-				"Id=" + Id +
-				", email='" + email + '\'' +
-				", password='" + password + '\'' +
-				", usertype='" + usertype + '\'' +
-				", username='" + username + '\'' +
-				", userProfile=" + userProfile +
-				", userContact=" + userSecurity +
-				'}';
+		  return email+ " "+usertype;
 	}
 
 
