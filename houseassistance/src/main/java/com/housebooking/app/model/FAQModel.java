@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 @Table(name = "faqs")
 public class FAQModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
-    private String question;
-    private String answer;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long Id;
+	private String question;
+	private String answer;
 
 }
 

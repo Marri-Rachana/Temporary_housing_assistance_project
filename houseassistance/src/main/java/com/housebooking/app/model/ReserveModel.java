@@ -23,14 +23,7 @@ public class ReserveModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
-	private String houseId;
-	private String userId;
-	private String moveInDate;
-	private String coupon;
-	@Lob
-	@Column(columnDefinition = "MEDIUMBLOB")
-	private String document1;
-	@Lob
-	@Column(columnDefinition = "MEDIUMBLOB")
-	private String document2;
+	private Long houseId;
+	private Long userId;
+
 }

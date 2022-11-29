@@ -21,7 +21,6 @@ public class ReviewOwnerModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	private String ownerMail;
-	private String houseName;
 	private String rating;
 	private String description;
 

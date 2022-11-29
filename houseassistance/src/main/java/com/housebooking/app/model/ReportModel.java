@@ -1,10 +1,14 @@
 package com.housebooking.app.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
@@ -18,8 +22,8 @@ public class ReportModel {
 	private Long Id;
 	private String userMail;
 	private String userType;
-	private String reason;
 	private String houseName;
+	private String reason;
 	
 	
 }

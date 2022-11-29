@@ -21,7 +21,6 @@ public class AppointmentModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	private String houseId;
-	private String houseDetails;
 	private String userId;
 	private String visitDate;
 	private String visitTime;
