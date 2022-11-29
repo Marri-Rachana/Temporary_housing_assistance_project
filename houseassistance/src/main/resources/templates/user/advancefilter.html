@@ -26,6 +26,9 @@
           <a class="nav-link" style="color:green" aria-current="page" href="/reviewOwner">Review Owner</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" style="color:green" aria-current="page" href="/reviewProperty">Review Property</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" style="color:green" aria-current="page" href="/reviewapp">Post Review</a>
         </li>
         <li class="nav-item">
@@ -75,20 +78,20 @@
   <div class="col-md-4">
     <label class="form-label">City</label>
    	<select name="city" class="form-control">
-	    <option th:value="null">Select</option>
-	    <option th:value="hyderabad">Hyderabad</option>
-	    <option th:value="banglore">Banglore</option>
-	    <option th:value="chennai">Chennai</option>
-	    <option th:value="pune">Pune</option>
-	    <option th:value="mumbai">Mumbai</option>
-	    <option th:value="cochin">Cochin</option>
-	    <option th:value="kolkata">Kolkata</option>
-	    <option th:value="vijayawada">Vijayawada</option>
+	     <option th:value="null">Select City</option>
+    <option th:value="newyork">New York</option>
+    <option th:value="losangeles">Los Angeles</option>
+    <option th:value="chicago">Chicago</option>
+    <option th:value="houston">Houston</option>
+    <option th:value="sandiego">San Diego</option>
+    <option th:value="dallas">Dallas</option>
+    <option th:value="austin">Austin</option>
+    <option th:value="nashville">Nashville</option>
     </select>
   </div>
   <div class="col-md-4">
     <label for="inputState" class="form-label">Move-In Date</label>
-    <input type="date" class="form-control" name ="moveInDate" required/>
+    <input type="date" class="form-control" name ="moveInDate"/>
   </div>
    <div class="col-md-4">
     <label class="form-label">House Type</label>
@@ -138,40 +141,34 @@
 
  			<div class="card col-3 mt-3" style="margin:20px;">
                 <div class="card-horizontal">
-                    <div class="img-square-wrapper">
-                        <img class="" src="http://via.placeholder.com/300x180" alt="Card image cap">
-                    </div>
+
                     <div class="card-body">
                         <h4 class="card-title">
-                         Name:
+
      						<th:block  th:text="${house.houseName}">
      						</th:block>
                         </h4>
-                        <p class="card-text">
-                        Details:
-     						<th:block th:text="${house.houseDetails}">
-     						</th:block>
-                        </p>
+
                     </div>
                     <ul class="list-group list-group-flush">
 					     <li class="list-group-item">
-					      Address:
-     						<th:block th:text="${house.houseAddress}">
+					    Number of Bedrooms:
+     						<th:block th:text="${house.noOfBedrooms}">
      						</th:block>
 					     </li>
 					    <li class="list-group-item"  >
+					    Number of Bathrooms:
+     						<th:block th:text="${house.noOfBathrooms}">
+     						</th:block>
+					    </li>
+					    <li class="list-group-item" >
+					    House Available From:
+     						<th:block th:text="${house.availableFrom}">
+     						</th:block>
+					    </li>
+					    <li class="list-group-item" >
 					    Contact:
      						<th:block th:text="${house.houseContact}">
-     						</th:block>
-					    </li>
-					    <li class="list-group-item" >
-					     Mail:
-     						<th:block th:text="${house.houseOwnerMail}">
-     						</th:block>
-					    </li>
-					    <li class="list-group-item" >
-					     City:
-     						<th:block th:text="${house.city}">
      						</th:block>
 					    </li>
   					</ul>
@@ -179,50 +176,16 @@
 				     <h5 class="card-title" >
 				     Rent:
 				     <th:block th:text="${house.houseRent}">
-				     </th:block>/- per month
+				     </th:block>$ per month
 				     </h5>
-				    <p class="card-text">
-				    Type:
-				     <th:block  th:text="${house.houseType}">
-				     </th:block>
-				    </p>
-				    <p class="card-text">
-				    Available From:
-				     <th:block  th:text="${house.availableFrom}">
-				     </th:block>
-				    </p>
-				    <p class="card-text">
-				    Parking Availability:
-				     <th:block  th:text="${house.parking}">
-				     </th:block>
-				    </p>
-				      <p class="card-text">
-				    Pet Friendly:
-				     <th:block  th:text="${house.petFriendly}">
-				     </th:block>
-				    </p>
-				     <p class="card-text">
-				    Lawn Availability:
-				     <th:block  th:text="${house.lawn}">
-				     </th:block>
-				    </p>
-				  </div>
+
                 </div>
-                <div class="card-footer">
-                   
-	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/reserve/' + ${house.Id}}">Reserve House</a>
-	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/appointment/' + ${house.Id}}">Book Appointment</a>
-	  			  <form action="#" th:action="@{'/addToFavourites/' + ${house.Id}}" method="post">
-			  <button type="submit" class="btn btn-success">
-	  			Add To Favourites
-			 </button>
-		   </form>
                 </div>
                 
                  <div class="card-footer">
                    
-	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/likeHouse/' + ${house.Id}}"><i class="bi bi-hand-thumbs-up"></i></a>
-	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/disLikeHouse/' + ${house.Id}}"><i class="bi bi-hand-thumbs-down"></i></a>
+	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/viewHouse/' + ${house.Id}}">View More Details</a>
+
 	  			
                 </div>
             </div>
