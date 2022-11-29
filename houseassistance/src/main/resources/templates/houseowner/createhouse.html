@@ -35,8 +35,6 @@
         
       </ul>
       <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success me-2" type="submit">Search</button> 
 		<div class="dropdown me-2">
 		  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		     <i class="bi bi-person-circle" style="color:white;"></i>
@@ -44,7 +42,12 @@
 		  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
 		    <button class="dropdown-item" type="button"><a href="/profile" style="color:black;text-decoration:none">Profile</a></button>
 		    <button class="dropdown-item" type="button"><a href="/notifications" style="color:black;text-decoration:none">Notifications</a></button>
-		    <button class="dropdown-item" type="button"></button>
+		    <button class="dropdown-item" type="button"><a href="/viewMessages" style="color:black;text-decoration:none">Messages</a></button>
+		    <button class="dropdown-item" type="button"><a href="/viewFaqsHO" style="color:black;text-decoration:none">FAQs</a></button>
+		    <button class="dropdown-item" type="button"><a href="/viewAppointments" style="color:black;text-decoration:none">Appointments</a></button>
+		     <button class="dropdown-item" type="button"><a href="/myreviews" style="color:black;text-decoration:none">My Reviews</a></button>
+		    <button class="dropdown-item" type="button"><a href="/propertyreviews" style="color:black;text-decoration:none">My Property Reviews</a></button>
+
 		  </div>
 		</div>
 		<button class="btn btn-primary me-2"><a href="/destroy" style="color:white;text-decoration:none">Logout</a></button>
@@ -60,19 +63,39 @@
   <div class="card-body">
   <form action="#" th:action=@{/saveHouse} th:object="${house}" method="post" enctype="multipart/form-data">
     <div class="form-group">
-     <input type="text" class="form-control" placeholder="Enter House Name"  th:field="*{houseName}" required/>
+     <input type="text" class="form-control" placeholder="Enter House Name"  name="houseName" required/>
     </div><br>
     <div class="form-group">
-     <textarea class="form-control" placeholder="Enter House Address"  th:field="*{houseAddress}" required></textarea> 
+      <input type="number" class="form-control" placeholder="Enter House Rent in dollars"  name="houseRent" required/>
     </div><br>
     <div class="form-group">
-     <textarea class="form-control" placeholder="Enter House Details"  th:field="*{houseDetails}" required></textarea> 
+     <input type="number" class="form-control" placeholder="Enter Number of bed rooms"  name="noOfBedrooms" required/>
     </div><br>
     <div class="form-group">
-     <input type="number" class="form-control" placeholder="Enter House Contact Number"  th:field="*{houseContact}" required/>
+     <input type="number" class="form-control" placeholder="Enter Number of bath rooms"  name="noOfBathrooms" required/>
     </div><br>
     <div class="form-group">
-      <input type="number" class="form-control" placeholder="Enter House Rent"  th:field="*{houseRent}" required/>
+     <input type="text" class="form-control" placeholder="Enter Door No"  name="doorNo" required/>
+    </div><br>
+    <div class="form-group">
+     <input type="text" class="form-control" placeholder="Enter Street Name"  name="street" required/>
+    </div><br>
+    <div class="form-group">
+     <select name="city" class="form-control" required>
+     <option th:value="null">Select City</option>
+    <option th:value="newyork">New York</option>
+    <option th:value="losangeles">Los Angeles</option>
+    <option th:value="chicago">Chicago</option>
+    <option th:value="houston">Houston</option>
+    <option th:value="sandiego">San Diego</option>
+    <option th:value="dallas">Dallas</option>
+    <option th:value="austin">Austin</option>
+    <option th:value="nashville">Nashville</option>
+    </select>
+    </div><br>
+
+    <div class="form-group">
+     <input type="text" class="form-control" placeholder="Enter Zip Code"  name="zipCode" required/>
     </div><br>
     <div class="form-group">
     <label>House Document</label>
@@ -83,30 +106,16 @@
       <input type="file" class="form-control" name="image" accept="image/png, image/jpeg" required/>
     </div><br>
     <div class="form-group">
-     <select th:field="*{houseType}" class="form-control">
+     <select th:field="*{houseType}" class="form-control" required>
      <option th:value="null">Select House Type</option>
     <option th:value="1bhk">1BHK</option>
     <option th:value="2bhk">2BHK</option>
-    <option th:value="1bhk">3BHK</option>
-    <option th:value="2bhk">4BHK</option>
+    <option th:value="3bhk">3BHK</option>
+    <option th:value="4bhk">4BHK</option>
     </select>
     </div><br>
     <div class="form-group">
-     <select th:field="*{city}" class="form-control">
-     <option th:value="null">Select City</option>
-    <option th:value="hyderabad">Hyderabad</option>
-    <option th:value="banglore">Banglore</option>
-    <option th:value="chennai">Chennai</option>
-    <option th:value="pune">Pune</option>
-    <option th:value="mumbai">Mumbai</option>
-    <option th:value="cochin">Cochin</option>
-    <option th:value="kolkata">Kolkata</option>
-    <option th:value="vijayawada">Vijayawada</option>
-    </select>
-    </div><br>
-
-    <div class="form-group">
-   <select th:field="*{parking}" class="form-control">
+   <select name="parking" class="form-control">
      <option th:value="null">Parking slot Availability</option>
      <option th:value="yes">yes</option>
      <option th:value="no">no</option>
@@ -115,7 +124,7 @@
     <br>
 
      <div class="form-group">
-   <select th:field="*{petFriendly}" class="form-control">
+   <select name="petFriendly" class="form-control">
      <option th:value="null">Pet Friendly</option>
      <option th:value="yes">yes</option>
      <option th:value="no">no</option>
@@ -124,13 +133,19 @@
     <br>
 
      <div class="form-group">
-   <select th:field="*{lawn}" class="form-control">
+   <select name="lawn" class="form-control">
      <option th:value="null">Lawn Availability</option>
      <option th:value="yes">yes</option>
      <option th:value="no">no</option>
     </select>
     </div>
     <br>
+
+    <div class="form-group">
+      <input type="date" class="form-control" name="availableFrom" required/>
+    </div><br>
+
+
 
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>

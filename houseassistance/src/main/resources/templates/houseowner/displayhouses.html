@@ -39,8 +39,7 @@
         
       </ul>
       <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success me-2" type="submit">Search</button> 
+
 		<div class="dropdown me-2">
 		  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		     <i class="bi bi-person-circle" style="color:white;"></i>
@@ -48,7 +47,12 @@
 		  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
 		    <button class="dropdown-item" type="button"><a href="/profile" style="color:black;text-decoration:none">Profile</a></button>
 		    <button class="dropdown-item" type="button"><a href="/notifications" style="color:black;text-decoration:none">Notifications</a></button>
-		    <button class="dropdown-item" type="button"></button>
+		    <button class="dropdown-item" type="button"><a href="/viewMessages" style="color:black;text-decoration:none">Messages</a></button>
+		    <button class="dropdown-item" type="button"><a href="/viewFaqsHO" style="color:black;text-decoration:none">FAQs</a></button>
+		    <button class="dropdown-item" type="button"><a href="/viewAppointments" style="color:black;text-decoration:none">Appointments</a></button>
+		     <button class="dropdown-item" type="button"><a href="/myreviews" style="color:black;text-decoration:none">My Reviews</a></button>
+		    <button class="dropdown-item" type="button"><a href="/propertyreviews" style="color:black;text-decoration:none">My Property Reviews</a></button>
+
 		  </div>
 		</div>
 		<button class="btn btn-primary me-2"><a href="/destroy" style="color:white;text-decoration:none">Logout</a></button>
@@ -64,27 +68,34 @@
 
  			<div class="card col-3 mt-3" style="margin:20px;">
                 <div class="card-horizontal">
-                    <div class="img-square-wrapper">
-                        <img class="" src="http://via.placeholder.com/300x180" alt="Card image cap">
-                    </div>
+
                     <div class="card-body">
                         <h4 class="card-title">
-                         Name:
+
      						<th:block  th:text="${house.houseName}">
      						</th:block>
                         </h4>
-                        <p class="card-text">
-                        Details:
-     						<th:block th:text="${house.houseDetails}">
-     						</th:block>
-                        </p>
+
                     </div>
                     <ul class="list-group list-group-flush">
 					     <li class="list-group-item">
-					      Address:
-     						<th:block th:text="${house.houseAddress}">
+					    Number of Bedrooms:
+     						<th:block th:text="${house.noOfBedrooms}">
+     						</th:block>
+					    </li>
+
+					     <li class="list-group-item"  >
+					    Number of Bathrooms:
+     						<th:block th:text="${house.noOfBathrooms}">
      						</th:block>
 					     </li>
+
+					    <li class="list-group-item"  >
+					    House Available From:
+     						<th:block th:text="${house.availableFrom}">
+     						</th:block>
+					    </li>
+
 					    <li class="list-group-item"  >
 					    Contact:
      						<th:block th:text="${house.houseContact}">
@@ -92,7 +103,7 @@
 					    </li>
 					    <li class="list-group-item" >
 					     Mail:
-     						<th:block th:text="${house.houseOwnerMail}">
+     						<th:block th:text="${houseOwnerMail}">
      						</th:block>
 					    </li>
   					</ul>
@@ -100,24 +111,16 @@
 				     <h5 class="card-title" >
 				     Rent:
 				     <th:block th:text="${house.houseRent}">
-				     </th:block>/- per month
+				     </th:block>$ per month
 				     </h5>
-				    <p class="card-text">
-				    Type:
-				     <th:block  th:text="${house.houseType}">
-				     </th:block>
-				    </p>
+
 				  </div>
                 </div>
                 <div class="card-footer">
                    
-	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/editHouse/' + ${house.Id}}">Update House</a>
+	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/viewSingleHouse/' + ${house.Id}}">View More Details</a>
 			
-    				  <form action="#" th:action="@{'/deleteHouse/' + ${house.Id}}" method="post">
-			  <button type="submit" class="btn btn-danger">
-	  			Delete House
-			 </button>
-		   </form>
+
                 </div>
             </div>
 
