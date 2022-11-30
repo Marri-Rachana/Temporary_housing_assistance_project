@@ -3,7 +3,9 @@ package com.housebooking.app.service;
 import com.housebooking.app.dao.*;
 import com.housebooking.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,12 @@ public class HouseOwnerService {
 
     @Autowired
     private TicketRepo ticketRepo;
+
+    @Autowired
+    private ReviewOwnerRepo reviewOwnerRepo;
+
+    @Autowired
+    private ReviewPropertyRepo reviewPropertyRepo;
 
     @Autowired
     private MessageRepo messageRepo;
@@ -77,4 +85,27 @@ public class HouseOwnerService {
         return studentMsgs;
     }
 
+    public List<ReviewOwnerModel> getAllMyReviews(String email) {
+
+        return reviewOwnerRepo.findMyAllReviews(email);
+    }
+
+    public List<ReviewPropertyModel> getAllPropertyReviews(String email) {
+        // TODO Auto-generated method stub
+
+        List<ReviewPropertyModel> reviews = new ArrayList<ReviewPropertyModel>();
+
+        reviewPropertyRepo.findAll().forEach(property -> {
+
+            houseRepo.findAll().forEach(house -> {
+                if(property.getHouseId().equals(house.getId().toString()) && house.getHouseOwnerMail().equals(email)) {
+                    reviews.add(property);
+                }
+            });
+
+        });
+
+
+        return reviews;
+    }
 }
