@@ -35,6 +35,9 @@ public class UserService {
     private ReserveRepo reserveRepo;
 
     @Autowired
+    private ReviewPropertyRepo reviewPropertyRepo;
+
+    @Autowired
     private FavouritesRepo favouritesRepo;
 
     @Autowired
@@ -148,6 +151,12 @@ public class UserService {
         List<HouseModel> houses = houseRepo.findAll();
         List<HouseModel> filteredHouses = houses.stream().filter(house -> house.getCity().equals(city) && house.getAvailableFrom().equals(moveInDate)).collect(Collectors.toList());
         return filteredHouses;
+    }
+
+    public void saveReviewProperty(ReviewPropertyModel property) {
+
+        reviewPropertyRepo.save(property);
+
     }
 
     public List<HouseModel> advanceFilterHouses(String city, String moveInDate, String parking, String petFriendly,
