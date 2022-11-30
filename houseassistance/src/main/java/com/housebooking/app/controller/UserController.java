@@ -2,7 +2,9 @@ package com.housebooking.app.controller;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.http.HttpSession;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -28,12 +30,15 @@ import com.housebooking.app.model.ReportModel;
 import com.housebooking.app.model.BookModel;
 import com.housebooking.app.model.ReviewModel;
 import com.housebooking.app.model.ReviewOwnerModel;
+import com.housebooking.app.model.ReviewPropertyModel;
 import com.housebooking.app.model.TicketModel;
 import com.housebooking.app.model.UserModel;
 import com.housebooking.app.service.AdminService;
 import com.housebooking.app.service.HomeService;
 import com.housebooking.app.service.HouseOwnerService;
 import com.housebooking.app.service.UserService;
+
+
 
 @Controller
 public class UserController {
@@ -244,6 +249,7 @@ public class UserController {
         book.setHouseId(houseid);
         book.setUserId(userdata.getId().toString());
 
+        String rent = book.getHouseRent();
         try {
         	book.setDocument1(Base64.getEncoder().encodeToString(file1.getBytes()));
         	book.setDocument2(Base64.getEncoder().encodeToString(file2.getBytes()));
@@ -259,7 +265,7 @@ public class UserController {
 			return "home/error";
         }
 
-        if(result.getHouseRent().equals(book.getHouseRent()))
+        if(result.getHouseRent().equals(rent))
         {
         	model.addAttribute("errormsg", "Coupoun Not Applied House Rent is " + result.getHouseRent() + "$");
 			return "home/error";
@@ -363,6 +369,28 @@ public class UserController {
 		return "redirect:/user";
 	}
 
+	@GetMapping("/reviewOwner")
+	public String reviewOwner(Model model, HttpSession session) {
+
+
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		List<UserModel> owners = homeService.getAllOwners();
+		model.addAttribute("owners", owners);
+		ReviewOwnerModel review = new ReviewOwnerModel();
+		model.addAttribute("review", review);
+		List<HouseDetailsModel> houses = userService.getAllHouseDetails();
+		model.addAttribute("houses", houses);
+		model.addAttribute("role", userdata.getUsertype());
+
+		return "user/reviewowner";
+	}
+
 	@PostMapping("/reviewOwnerAndHouse")
 	public String reviewOwner(@ModelAttribute("review") ReviewOwnerModel review, Model model, HttpSession session)
 	{
@@ -370,6 +398,39 @@ public class UserController {
 
 		UserModel user = homeService.findUser(review.getOwnerMail());
 		userService.saveReviewOwner(review);
+
+		return "redirect:/user";
+	}
+
+	@GetMapping("/reviewProperty")
+	public String reviewProperty(Model model, HttpSession session) {
+
+
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		List<UserModel> owners = homeService.getAllOwners();
+		model.addAttribute("owners", owners);
+		ReviewPropertyModel property = new ReviewPropertyModel();
+		model.addAttribute("property", property);
+		List<HouseDetailsModel> houses = userService.getAllHouseDetails();
+		model.addAttribute("houses", houses);
+		model.addAttribute("role", userdata.getUsertype());
+
+		return "user/reviewproperty";
+	}
+
+	@PostMapping("/reviewHouseProperty")
+	public String reviewHouseProperty(@ModelAttribute("property") ReviewPropertyModel property, Model model, HttpSession session)
+	{
+		System.out.println("reported Owner");
+
+
+		userService.saveReviewProperty(property);
 
 		return "redirect:/user";
 	}
@@ -390,6 +451,24 @@ public class UserController {
 		model.addAttribute("role", userdata.getUsertype());
 
 		return "user/reviewapp";
+	}
+
+	@PostMapping("/reviewApplication")
+	public String reviewApp(@ModelAttribute("review") ReviewModel review, Model model, HttpSession session)
+	{
+		System.out.println("reviewed App");
+
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+		review.setUserMail(userdata.getEmail());
+		houseOwnerService.saveReview(review);
+
+		return "redirect:/user";
 	}
 
 	@GetMapping("/ticketraise")
@@ -658,21 +737,5 @@ public class UserController {
 		return "user/sortbyprice";
 	}
 
-	@PostMapping("/reviewApplication")
-	public String reviewApp(@ModelAttribute("review") ReviewModel review, Model model, HttpSession session)
-	{
-		System.out.println("reviewed App");
 
-		@SuppressWarnings("unchecked")
-		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
-		if(messages == null) {
-			model.addAttribute("errormsg", "Session Expired. Please Login Again");
-			return "home/error";
-		}
-		UserModel userdata = homeService.findUser(messages.get(0));
-		review.setUserMail(userdata.getEmail());
-		houseOwnerService.saveReview(review);
-
-		return "redirect:/user";
-	}
 }
