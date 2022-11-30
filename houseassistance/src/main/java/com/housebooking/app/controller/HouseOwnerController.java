@@ -25,6 +25,8 @@ import com.housebooking.app.model.HouseModel;
 import com.housebooking.app.model.MessageModel;
 import com.housebooking.app.model.ReportModel;
 import com.housebooking.app.model.ReviewModel;
+import com.housebooking.app.model.ReviewOwnerModel;
+import com.housebooking.app.model.ReviewPropertyModel;
 import com.housebooking.app.model.TicketModel;
 import com.housebooking.app.model.UserModel;
 import com.housebooking.app.model.UserProfileModel;
@@ -442,5 +444,41 @@ public class HouseOwnerController {
 		userService.saveMsg(msg);
 
 		return "redirect:/houseowner";
+	}
+
+	@GetMapping("/myreviews")
+	public String myReviews(Model model, HttpSession session) {
+
+
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+
+		List<ReviewOwnerModel> myReviews = houseOwnerService.getAllMyReviews(userdata.getEmail());
+		model.addAttribute("myReviews", myReviews);
+		model.addAttribute("role", userdata.getUsertype());
+		return "houseowner/viewownerreviews";
+	}
+
+	@GetMapping("/propertyreviews")
+	public String propertyReviews(Model model, HttpSession session) {
+
+
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+
+		List<ReviewPropertyModel> reviews = houseOwnerService.getAllPropertyReviews(userdata.getEmail());
+		model.addAttribute("reviews", reviews);
+		model.addAttribute("role", userdata.getUsertype());
+		return "houseowner/viewpropertyreviews";
 	}
 }
