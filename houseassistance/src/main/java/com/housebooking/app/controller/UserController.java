@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpSession;
 
-
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -34,9 +34,20 @@ import com.housebooking.app.model.ReviewPropertyModel;
 import com.housebooking.app.model.TicketModel;
 import com.housebooking.app.model.UserModel;
 import com.housebooking.app.service.AdminService;
+import com.housebooking.app.service.CommonService;
 import com.housebooking.app.service.HomeService;
 import com.housebooking.app.service.HouseOwnerService;
 import com.housebooking.app.service.UserService;
+
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Request.Builder;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
 
 
 
@@ -54,6 +65,8 @@ public class UserController {
 	@Autowired
 	private AdminService adminService;
 
+	@Autowired
+	private CommonService commonService;
 	@Autowired
 	private BookModel book;
 
@@ -74,7 +87,6 @@ public class UserController {
 
 	@Autowired
 	private MessageModel msg;
-
 
 	@GetMapping("/user")
 	public String getUserWelcomePage(@ModelAttribute("user") UserModel user, Model model, HttpSession session)
@@ -466,7 +478,7 @@ public class UserController {
 		}
 		UserModel userdata = homeService.findUser(messages.get(0));
 		review.setUserMail(userdata.getEmail());
-		houseOwnerService.saveReview(review);
+		commonService.saveReview(review);
 
 		return "redirect:/user";
 	}
@@ -503,7 +515,7 @@ public class UserController {
 		UserModel userdata = homeService.findUser(messages.get(0));
 		ticket.setUserMail(userdata.getEmail());
 
-		houseOwnerService.saveTicket(ticket);
+		commonService.saveTicket(ticket);
 
 		return "redirect:/user";
 	}
@@ -736,6 +748,25 @@ public class UserController {
         model.addAttribute("role", userdata.getUsertype());
 		return "user/sortbyprice";
 	}
+
+	@GetMapping("/nearBy")
+	public String nearBy(Model model, HttpSession session){
+
+		@SuppressWarnings("unchecked")
+        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+
+		if(messages == null) {
+			model.addAttribute("errormsg", "Session Expired. Please Login Again");
+			return "home/error";
+		}
+		UserModel userdata = homeService.findUser(messages.get(0));
+        model.addAttribute("sessionMessages", messages);
+
+        model.addAttribute("role", userdata.getUsertype());
+
+		return "user/nearby";
+	}
+
 
 
 }
