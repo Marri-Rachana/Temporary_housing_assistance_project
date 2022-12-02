@@ -1,13 +1,35 @@
 package com.housebooking.app.service;
 
-import com.housebooking.app.dao.*;
-import com.housebooking.app.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import java.util.ArrayList;
-
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.housebooking.app.dao.AnnouncementRepo;
+import com.housebooking.app.dao.CouponRepo;
+import com.housebooking.app.dao.FAQRepo;
+import com.housebooking.app.dao.HomeRepo;
+import com.housebooking.app.dao.HouseDetailsRepo;
+import com.housebooking.app.dao.HouseDocumentRepo;
+import com.housebooking.app.dao.HousePropertiesRepo;
+import com.housebooking.app.dao.HouseRepo;
+import com.housebooking.app.dao.HouseStatusRepo;
+import com.housebooking.app.dao.ReportRepo;
+import com.housebooking.app.dao.TicketRepo;
+import com.housebooking.app.model.Announcement;
+import com.housebooking.app.model.Coupon;
+import com.housebooking.app.model.FAQModel;
+import com.housebooking.app.model.HouseDetailsModel;
+import com.housebooking.app.model.HouseDocumentModel;
+import com.housebooking.app.model.HouseModel;
+import com.housebooking.app.model.HousePropertiesModel;
+import com.housebooking.app.model.HouseStatusModel;
+import com.housebooking.app.model.ReportModel;
+import com.housebooking.app.model.TicketModel;
+import com.housebooking.app.model.UserModel;
+
+@Service
 public class AdminService {
 
 	@Autowired
@@ -15,6 +37,9 @@ public class AdminService {
 
 	@Autowired
 	private ReportRepo reportRepo;
+
+	@Autowired
+	private HouseDetailsRepo houseDetailsRepo;
 
 	@Autowired
 	private HomeRepo homeRepo;
@@ -26,6 +51,9 @@ public class AdminService {
 	private HouseStatusRepo houseStatusRepo;
 
 	@Autowired
+	private HouseOwnerService houseOwnerService;
+
+	@Autowired
 	private HousePropertiesRepo housePropertiesRepo;
 
 	@Autowired
@@ -33,8 +61,8 @@ public class AdminService {
 
 	@Autowired
 	private TicketRepo ticketRepo;
-  
-  @Autowired
+
+	@Autowired
 	private FAQRepo faqRepo;
 
 	@Autowired
@@ -71,8 +99,10 @@ public class AdminService {
 
 	public void removeHouse(Long id) {
 		ReportModel report = reportRepo.findReportById(id);
-		HouseModel house = houseRepo.findbyHouseName(report.getHouseName());
-		houseRepo.deleteById(house.getId());
+		HouseDetailsModel house = houseDetailsRepo.findbyHouseName(report.getHouseName());
+		System.out.println(report.getHouseName());
+		System.out.println(house.getId());
+		houseOwnerService.deleteHouse(house.getId());
 		reportRepo.deleteById(id);
 	}
 
@@ -101,6 +131,7 @@ public class AdminService {
 	}
 
 	public void addCoupon(Coupon coupon) {
+		// TODO Auto-generated method stub
 		couponRepo.save(coupon);
 	}
 
@@ -135,6 +166,6 @@ List<HouseDocumentModel> houseDocs = new ArrayList<HouseDocumentModel>();
 
 		houseProperty.setIsVerified("1");
 
-}
+	}
 
 }

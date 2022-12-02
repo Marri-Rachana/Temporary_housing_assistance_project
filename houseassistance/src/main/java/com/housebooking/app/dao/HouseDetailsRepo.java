@@ -19,5 +19,9 @@ public interface HouseDetailsRepo extends JpaRepository<HouseDetailsModel, Long>
 	HouseDetailsModel findHouseDetails(@Param("id") Long id);
 
 
+	@Query( value = "select * from house_details where house_name = :houseName", nativeQuery = true)
+	HouseDetailsModel findbyHouseName(@Param("houseName") String houseName);
+
+
 
 }
