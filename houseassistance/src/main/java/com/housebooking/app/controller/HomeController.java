@@ -18,13 +18,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.mail.SimpleMailMessage;
 
 import com.housebooking.app.model.AddressModel;
-import com.housebooking.app.model.EmailModel;
+import com.housebooking.app.model.ReviewModel;
 import com.housebooking.app.model.UserModel;
 import com.housebooking.app.model.UserProfileModel;
 import com.housebooking.app.model.UserSecurityModel;
 import com.housebooking.app.service.HomeService;
+import com.housebooking.app.communication.Email;
 
 @Controller
 public class HomeController {
@@ -36,7 +38,9 @@ public class HomeController {
 	private UserModel usermodel;
 
 	@Autowired
-	private EmailModel emailmodel;
+	private Email email;
+
+	@Value("${spring.mail.username}") private String sender;
 
 	public enum UserType{
 		HOME_OWNER("houseowner"),STUDENT("student"),ADMIN("admin");
@@ -178,6 +182,7 @@ public class HomeController {
 	@PostMapping("/sendMail")
 	public String sendMail(@ModelAttribute("user") UserModel user, Model model)
 	{	
+
 		int output = 0;
 		System.out.println("save===usernew password");
 		System.out.println("userModel#########"+user.toString());
@@ -187,11 +192,16 @@ public class HomeController {
 			model.addAttribute("errormsg", "Email Id doesnot exist in our database");
 			return "home/error";
 		}
-		emailmodel.setMsgBody("Your Username is "+ userModel.getUsername());
-		emailmodel.setRecipient(userModel.getEmail());
-		emailmodel.setSubject("Username Recovery from HouseAssistance");
-		System.out.println("------------------body"+ emailmodel.getMsgBody()+"======="+ emailmodel.getRecipient());
-		output = homeService.sendSimpleMail(emailmodel);
+			SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+            // Setting up necessary details
+            mailMessage.setFrom(sender);
+            mailMessage.setTo(userModel.getEmail());
+            mailMessage.setText("Your Username is "+ userModel.getUsername());
+            mailMessage.setSubject("Username Recovery from HouseAssistance");
+
+            //System.out.println("------------------body"+ mailMessage.getFrom()+"recep============"+mailMessage.getTo()+"recc--++"+details.getRecipient());
+		output = email.sendSimpleMail(mailMessage);
 		
 		System.out.println("------------------"+ output);
 		if(output !=1) {
