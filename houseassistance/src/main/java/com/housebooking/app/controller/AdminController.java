@@ -1,19 +1,30 @@
 package com.housebooking.app.controller;
+
+import java.io.File;
+import java.nio.file.Files;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.housebooking.app.model.Announcement;
 import com.housebooking.app.model.Coupon;
 import com.housebooking.app.model.FAQModel;
+import com.housebooking.app.model.HouseDocumentModel;
 import com.housebooking.app.model.ReportModel;
 import com.housebooking.app.model.TicketModel;
 import com.housebooking.app.model.UserModel;
@@ -193,6 +204,41 @@ public class AdminController {
 	public String updateFaq(@ModelAttribute("coupon") Coupon coupon) {
 
 		adminService.addCoupon(coupon);
+
+		return "redirect:/admin";
+
+	}
+
+	@GetMapping("/verify")
+	public String viewVerifyPage(Model model) {
+
+
+		List<HouseDocumentModel> houses = adminService.getAllNotVerifiedHouses();
+
+		model.addAttribute("houses", houses);
+
+		return "admin/verifydocuments";
+
+	}
+
+	@GetMapping("/downloadDoc/{id}")
+	public ResponseEntity<Resource> downloadFile(@PathVariable(name="id") Long id) {
+	    HouseDocumentModel document = adminService.getHouseDocument(id);
+	    ByteArrayResource resource = new ByteArrayResource(document.getDocument());
+	    	System.out.println(resource);
+	      return ResponseEntity.ok()
+	    		  .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "houseDoc" + "\"")
+	              .contentType(MediaType.parseMediaType
+	                    ("application/octet-stream"))
+	    	        .body(resource);
+	}
+
+	@GetMapping("/verifyHouse/{id}")
+	public String VerifyHouse(Model model, @PathVariable(name="id") Long id) {
+
+
+		adminService.verifyHouse(id);
+
 
 		return "redirect:/admin";
 
