@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.housebooking.app.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.housebooking.app.model.AddressModel;
 import com.housebooking.app.model.EmailModel;
+import com.housebooking.app.model.ReviewModel;
 import com.housebooking.app.model.UserModel;
 import com.housebooking.app.model.UserProfileModel;
 import com.housebooking.app.model.UserSecurityModel;
@@ -31,6 +33,9 @@ public class HomeController {
 
 	@Autowired
 	private HomeService homeService;
+
+	@Autowired
+	private MessageService messageService;
 
 	@Autowired
 	private UserModel usermodel;
@@ -191,7 +196,7 @@ public class HomeController {
 		emailmodel.setRecipient(userModel.getEmail());
 		emailmodel.setSubject("Username Recovery from HouseAssistance");
 		System.out.println("------------------body"+ emailmodel.getMsgBody()+"======="+ emailmodel.getRecipient());
-		output = homeService.sendSimpleMail(emailmodel);
+		output = messageService.sendSimpleMail(emailmodel);
 		
 		System.out.println("------------------"+ output);
 		if(output !=1) {
@@ -249,7 +254,6 @@ public class HomeController {
 		}
 		System.out.println("save===usernew password");
 		System.out.println("userModel#########"+user.toString());
-		homeService.saveNewPassword(user);
 		 request.getSession().invalidate();
 		return "redirect:/login";
 	}
@@ -327,6 +331,19 @@ public class HomeController {
 
 	}
 	
+	@GetMapping("/appReviews")
+	public String appReviews(Model model, HttpSession session) {
+
+		List<ReviewModel> reviews = homeService.getAllReviews();
+
+		model.addAttribute("reviews", reviews);
+
+		return "home/appreviews";
+
+
+
+	}
+
 
 
 }
