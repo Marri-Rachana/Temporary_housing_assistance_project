@@ -25,7 +25,7 @@
          <li class="nav-item">
           <a class="nav-link" style="color:green" aria-current="page" href="/reviewOwner">Review Owner</a>
         </li>
-        <li class="nav-item">
+            <li class="nav-item">
           <a class="nav-link" style="color:green" aria-current="page" href="/reviewProperty">Review Property</a>
         </li>
         <li class="nav-item">
@@ -61,7 +61,7 @@
 		    <button class="dropdown-item" type="button"><a href="/sendMessage" style="color:black;text-decoration:none">Send Message</a></button>
 		    <button class="dropdown-item" type="button"><a href="/viewReplies" style="color:black;text-decoration:none">View Messages</a></button>
 		    <button class="dropdown-item" type="button"><a href="/viewFaqsStudent" style="color:black;text-decoration:none">FAQs</a></button>
-		     
+		      <button class="dropdown-item" type="button"><a href="/nearBy" style="color:black;text-decoration:none">Near Services</a></button>
 		  </div>
 		</div>     
         <button class="btn btn-primary me-2"><a href="/login" style="color:white;text-decoration:none">Logout</a></button>
@@ -151,26 +151,30 @@
 
                     </div>
                     <ul class="list-group list-group-flush">
-					     <li class="list-group-item">
+					     <li class="list-group-item"  >
 					    Number of Bedrooms:
      						<th:block th:text="${house.noOfBedrooms}">
      						</th:block>
-					     </li>
-					    <li class="list-group-item"  >
+					    </li>
+
+					     <li class="list-group-item"  >
 					    Number of Bathrooms:
      						<th:block th:text="${house.noOfBathrooms}">
      						</th:block>
 					    </li>
-					    <li class="list-group-item" >
+
+					    <li class="list-group-item"  >
 					    House Available From:
      						<th:block th:text="${house.availableFrom}">
      						</th:block>
 					    </li>
-					    <li class="list-group-item" >
+
+					    <li class="list-group-item"  >
 					    Contact:
      						<th:block th:text="${house.houseContact}">
      						</th:block>
 					    </li>
+
   					</ul>
 				  <div class="card-body">
 				     <h5 class="card-title" >
@@ -179,19 +183,20 @@
 				     </th:block>$ per month
 				     </h5>
 
+				  </div>
                 </div>
-                </div>
-                
-                 <div class="card-footer">
+                <div class="card-footer">
                    
 	  			<a style="margin-bottom:10px;" class="btn btn-primary" th:href="@{'/viewHouse/' + ${house.Id}}">View More Details</a>
 
-	  			
+
                 </div>
             </div>
 
 
 </th:block> 
+
+
 
 
 </div>
