@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,7 +41,8 @@ public class HomeController {
 	@Autowired
 	private Email email;
 
-	@Value("${spring.mail.username}") private String sender;
+	@Value("${spring.mail.username}")
+	private String sender;
 
 	public enum UserType{
 		HOME_OWNER("houseowner"),STUDENT("student"),ADMIN("admin");
@@ -259,7 +261,6 @@ public class HomeController {
 		}
 		System.out.println("save===usernew password");
 		System.out.println("userModel#########"+user.toString());
-		homeService.saveNewPassword(user);
 		 request.getSession().invalidate();
 		return "redirect:/login";
 	}
