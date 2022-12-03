@@ -337,6 +337,19 @@ public class HomeController {
 
 	}
 	
+	@GetMapping("/appReviews")
+	public String appReviews(Model model, HttpSession session) {
+
+		List<ReviewModel> reviews = homeService.getAllReviews();
+
+		model.addAttribute("reviews", reviews);
+
+		return "home/appreviews";
+
+
+
+	}
+
 
 
 }
