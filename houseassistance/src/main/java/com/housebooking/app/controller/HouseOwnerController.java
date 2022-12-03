@@ -1,6 +1,7 @@
 package com.housebooking.app.controller;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.housebooking.app.model.AddressModel;
 import com.housebooking.app.model.Announcement;
 import com.housebooking.app.model.AppointmentModel;
+import com.housebooking.app.model.BookModel;
 import com.housebooking.app.model.FAQModel;
 import com.housebooking.app.model.HouseAttributesModel;
 import com.housebooking.app.model.HouseDetailsModel;
@@ -31,6 +34,7 @@ import com.housebooking.app.model.TicketModel;
 import com.housebooking.app.model.UserModel;
 import com.housebooking.app.model.UserProfileModel;
 import com.housebooking.app.service.AdminService;
+import com.housebooking.app.service.CommonService;
 import com.housebooking.app.service.HomeService;
 import com.housebooking.app.service.HouseOwnerService;
 import com.housebooking.app.service.UserService;
@@ -50,10 +54,13 @@ public class HouseOwnerController {
 	private UserService userService;
 
 	@Autowired
-	private ReportModel report;
+	private CommonService commonService;
 
 	@Autowired
 	private HouseModel house;
+
+	@Autowired
+	private ReportModel report;
 
 	@Autowired
 	private ReviewModel review;
@@ -176,7 +183,7 @@ public class HouseOwnerController {
 			return "home/error";
 		}
 		UserModel userdata = homeService.findUser(messages.get(0));
-        HouseModel house = houseOwnerService.getHouseById(id);
+HouseModel house = houseOwnerService.getHouseById(id);
 
 		HouseDetailsModel houseDetails = houseOwnerService.getHouseDetailsById(id);
 		HouseAttributesModel houseAttributes = houseOwnerService.getHouseAttributes(id);
@@ -318,7 +325,7 @@ public class HouseOwnerController {
 		}
 		UserModel userdata = homeService.findUser(messages.get(0));
 		review.setUserMail(userdata.getEmail());
-		houseOwnerService.saveReview(review);
+		commonService.saveReview(review);
 		
 		return "redirect:/houseowner";
 	}
@@ -355,7 +362,7 @@ public class HouseOwnerController {
 		UserModel userdata = homeService.findUser(messages.get(0));
 		ticket.setUserMail(userdata.getEmail());
 
-		houseOwnerService.saveTicket(ticket);
+		commonService.saveTicket(ticket);
 
 		return "redirect:/houseowner";
 	}
