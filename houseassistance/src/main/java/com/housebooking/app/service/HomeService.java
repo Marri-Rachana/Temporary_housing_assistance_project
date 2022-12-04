@@ -65,6 +65,7 @@ public class HomeService {
 		}
 
 		List<UserModel> user = homeRepo.findAll();
+		System.out.println(user);
 		List<UserModel> veifiedUser = user.stream().filter(n -> (n.getEmail().equals(usermodel.getEmail()) || n.getUsername().equals(usermodel.getEmail())) && n.getPassword().equals(usermodel.getPassword())).collect(Collectors.toList());
 		
 		if(veifiedUser.size() ==1) {
@@ -105,12 +106,19 @@ public class HomeService {
 		}
 	}
 
-	public void saveNewPassword(UserModel usermodel) {
-		
-		UserModel user = homeRepo.findbyEmail(usermodel.getEmail());
-		System.out.println("user#########"+user.toString());
-		user.setPassword(usermodel.getPassword());
-		homeRepo.save(user);
+	public int saveNewPassword(UserModel usermodel) {
+
+		try {
+			UserModel user = homeRepo.findbyEmail(usermodel.getEmail());
+			System.out.println("user#########"+user.toString());
+			user.setPassword(usermodel.getPassword());
+			homeRepo.save(user);
+		}
+		catch(Exception e)
+		{
+			return 0;
+		}
+		return 1;
 	}
 	
   
@@ -145,143 +153,235 @@ public class HomeService {
 
 	}
 
-	public void deleteUser(Long id) {
-
-		homeRepo.deleteById(id);
-		userProfileRepo.deleteById(id);
-		userSecurityRepo.deleteById(id);
-		addressRepo.deleteByUserProfile(id);
-
+	public int deleteUser(Long id) {
+        try {
+			homeRepo.deleteById(id);
+			userProfileRepo.deleteById(id);
+			userSecurityRepo.deleteById(id);
+			addressRepo.deleteByUserProfile(id);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+        return 1;
 	}
 
 	public List<UserModel> getAllStudents() {
 		// TODO Auto-generated method stub
-		return homeRepo.findAllStudents();
+		List<UserModel> students;
+		try {
+			students = homeRepo.findAllStudents();
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return  students;
 	}
 
 	public List<UserModel> getAllOwners() {
 		// TODO Auto-generated method stub
-		return homeRepo.findAllOwners();
+		List<UserModel> owner;
+		try {
+			owner = homeRepo.findAllOwners();
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return owner;
 	}
 
-	public void saveUserProfile(String mobileNo,String firstname, String lastname,
+	public int saveUserProfile(String mobileNo,String firstname, String lastname,
 			String age, String email, String doorNo, String street, String city,String zipCode) {
 		// TODO Auto-generated method stub
-		UserModel user = homeRepo.findbyEmail(email);
-		UserProfileModel userProfile = new UserProfileModel();
-		userProfile.setUser(user);
-		userProfile.setMobileNo(mobileNo);
-		userProfile.setFirstname(firstname);
-		userProfile.setLastname(lastname);
-		userProfile.setAge(age);
-		UserProfileModel savedUserProfile = userProfileRepo.save(userProfile);
+		try {
+			UserModel user = homeRepo.findbyEmail(email);
+			UserProfileModel userProfile = new UserProfileModel();
+			userProfile.setUser(user);
+			userProfile.setMobileNo(mobileNo);
+			userProfile.setFirstname(firstname);
+			userProfile.setLastname(lastname);
+			userProfile.setAge(age);
+			UserProfileModel savedUserProfile = userProfileRepo.save(userProfile);
 
 
+			AddressModel address = new AddressModel();
 
+			address.setProfileId(savedUserProfile.getId());
+			address.setCity(city);
+			address.setDoorNo(doorNo);
+			address.setStreet(street);
+			address.setZipCode(zipCode);
+			address.setHouseId(new Long(0));
+			addressRepo.save(address);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
 
-		AddressModel address = new AddressModel();
-
-		address.setProfileId(savedUserProfile.getId());
-		address.setCity(city);
-		address.setDoorNo(doorNo);
-		address.setStreet(street);
-		address.setZipCode(zipCode);
-		address.setHouseId(new Long(0));
-		addressRepo.save(address);
-
-
+        return 1;
 	}
 
-	public void saveUserAddress(String mobileNo,String firstname, String lastname, String age, String email) {
+	public int saveUserAddress(String mobileNo,String firstname, String lastname, String age, String email) {
 		// TODO Auto-generated method stub
-		UserModel user = homeRepo.findbyEmail(email);
-		UserProfileModel userProfile = new UserProfileModel();
-		userProfile.setUser(user);
-		userProfile.setMobileNo(mobileNo);
-		userProfile.setFirstname(firstname);
-		userProfile.setLastname(lastname);
-		userProfile.setAge(age);
+		try {
+			UserModel user = homeRepo.findbyEmail(email);
+			UserProfileModel userProfile = new UserProfileModel();
+			userProfile.setUser(user);
+			userProfile.setMobileNo(mobileNo);
+			userProfile.setFirstname(firstname);
+			userProfile.setLastname(lastname);
+			userProfile.setAge(age);
 
-		userProfileRepo.save(userProfile);
+			userProfileRepo.save(userProfile);
+		}
+		catch(Exception e)
+		{
+			return 0;
+		}
+		return 1;
 	}
 
 	public List<Announcement> getAllAnnouncements() {
 		// TODO Auto-generated method stub
-
-		return announcementRepo.findAll();
+		List<Announcement> announcements;
+        try {
+			announcements = announcementRepo.findAll();
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return announcements;
 	}
 
-	public void saveUserSecurity(String securityQuestion,String securityAnswer, String email) {
+	public int saveUserSecurity(String securityQuestion,String securityAnswer, String email) {
 		// TODO Auto-generated method stub
-		UserModel user = homeRepo.findbyEmail(email);
-		UserSecurityModel userSecurity = new UserSecurityModel();
-		userSecurity.setUser(user);
-		userSecurity.setSecurityQuestion(securityQuestion);
-		userSecurity.setSecurityAnswer(securityAnswer);
-		userSecurityRepo.save(userSecurity);
-
+		try {
+			UserModel user = homeRepo.findbyEmail(email);
+			UserSecurityModel userSecurity = new UserSecurityModel();
+			userSecurity.setUser(user);
+			userSecurity.setSecurityQuestion(securityQuestion);
+			userSecurity.setSecurityAnswer(securityAnswer);
+			userSecurityRepo.save(userSecurity);
+		}
+		catch(Exception e)
+		{
+			return 0;
+		}
+        return 1;
 	}
 
 	public UserProfileModel getUserProfile(Long id) {
 		// TODO Auto-generated method stub
-
-
-		return userProfileRepo.findUserProfile(id);
+		UserProfileModel user ;
+		try {
+			user = userProfileRepo.findUserProfile(id);
+		}
+		catch (Exception e)
+		{
+			return  null;
+		}
+		return user;
 	}
 
 	public UserSecurityModel getUserSecurity(Long id) {
 		// TODO Auto-generated method stub
-		return userSecurityRepo.findUserSecurity(id);
+		UserSecurityModel userSecurityModel;
+		try {
+			userSecurityModel = userSecurityRepo.findUserSecurity(id);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return userSecurityModel;
 	}
 
 	public AddressModel getUserAddress(Long id) {
 		// TODO Auto-generated method stub
-		return addressRepo.findUserAddress(id);
+		AddressModel addressModel;
+		try {
+			addressModel = addressRepo.findUserAddress(id);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return addressModel;
 	}
 
-	public void updateUserProfile(Long id, String email, String mobileNo, String firstname, String lastname, String age) {
+	public int updateUserProfile(Long id, String email, String mobileNo, String firstname, String lastname, String age) {
 		// TODO Auto-generated method stub
-		UserProfileModel userProfile = userProfileRepo.findUserProfile(id);
-		userProfile.setFirstname(firstname);
-		userProfile.setLastname(lastname);
-		userProfile.setAge(age);
+		try {
+			UserProfileModel userProfile = userProfileRepo.findUserProfile(id);
+			userProfile.setFirstname(firstname);
+			userProfile.setLastname(lastname);
+			userProfile.setAge(age);
 
-		userProfileRepo.save(userProfile);
+			userProfileRepo.save(userProfile);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
 
+        return 1;
+	}
+
+	public int updateUserSecurity(Long id, String securityQuestion, String securityAnswer) {
+		// TODO Auto-generated method stub
+		try {
+			UserSecurityModel userSecurity = userSecurityRepo.findUserSecurity(id);
+
+			userSecurity.setSecurityQuestion(securityQuestion);
+			userSecurity.setSecurityAnswer(securityAnswer);
+
+			userSecurityRepo.save(userSecurity);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+		return 1;
 
 	}
 
-	public void updateUserSecurity(Long id, String securityQuestion, String securityAnswer) {
+	public int updateUserAddress(Long id, String doorNo, String street, String city, String zipCode) {
 		// TODO Auto-generated method stub
+        try {
+			AddressModel address = addressRepo.findUserAddress(id);
 
-		UserSecurityModel userSecurity = userSecurityRepo.findUserSecurity(id);
+			address.setDoorNo(doorNo);
+			address.setStreet(street);
+			address.setCity(city);
+			address.setZipCode(zipCode);
 
-		userSecurity.setSecurityQuestion(securityQuestion);
-		userSecurity.setSecurityAnswer(securityAnswer);
+			addressRepo.save(address);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
 
-		userSecurityRepo.save(userSecurity);
-
-	}
-
-	public void updateUserAddress(Long id, String doorNo, String street, String city, String zipCode) {
-		// TODO Auto-generated method stub
-
-		AddressModel address = addressRepo.findUserAddress(id);
-
-		address.setDoorNo(doorNo);
-		address.setStreet(street);
-		address.setCity(city);
-		address.setZipCode(zipCode);
-
-		addressRepo.save(address);
-
-
+       return 1;
 
 	}
 
 	public List<ReviewModel> getAllReviews() {
 		// TODO Auto-generated method stub
-		return reviewsRepo.findAll();
+		List<ReviewModel> reviewModels;
+		try {
+			reviewModels = reviewsRepo.findAll();
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return reviewModels;
 	}
 
 
