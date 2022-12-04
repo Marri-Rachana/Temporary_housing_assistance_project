@@ -138,11 +138,18 @@ public class HouseOwnerController {
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-		UserModel userdata = homeService.findUser(messages.get(0));
-		List<HouseDetailsModel> houses = houseOwnerService.getAllHousesDetailsByEmail(userdata.getEmail());
-		model.addAttribute("houses", houses);
-		model.addAttribute("houseOwnerMail", userdata.getEmail());
-		model.addAttribute("role", userdata.getUsertype());
+		try {
+			UserModel userdata = homeService.findUser(messages.get(0));
+			List<HouseDetailsModel> houses = houseOwnerService.getAllHousesDetailsByEmail(userdata.getEmail());
+			model.addAttribute("houses", houses);
+			model.addAttribute("houseOwnerMail", userdata.getEmail());
+			model.addAttribute("role", userdata.getUsertype());
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to view Houses. Try again after sometime");
+			return "home/error";
+		}
 		return "houseowner/displayhouses";
 	}
 	
@@ -156,19 +163,26 @@ public class HouseOwnerController {
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-		UserModel userdata = homeService.findUser(messages.get(0));
-		HouseModel house = houseOwnerService.getHouseById(id);
+		try {
+			UserModel userdata = homeService.findUser(messages.get(0));
+			HouseModel house = houseOwnerService.getHouseById(id);
 
-		HouseDetailsModel houseDetails = houseOwnerService.getHouseDetailsById(id);
-		HouseAttributesModel houseAttributes = houseOwnerService.getHouseAttributes(id);
-		AddressModel houseAddress = houseOwnerService.getHouseAddress(id);
+			HouseDetailsModel houseDetails = houseOwnerService.getHouseDetailsById(id);
+			HouseAttributesModel houseAttributes = houseOwnerService.getHouseAttributes(id);
+			AddressModel houseAddress = houseOwnerService.getHouseAddress(id);
 
-		model.addAttribute("house", house);
-		model.addAttribute("houseDetails", houseDetails);
-		model.addAttribute("houseAttributes", houseAttributes);
-		model.addAttribute("houseAddress", houseAddress);
+			model.addAttribute("house", house);
+			model.addAttribute("houseDetails", houseDetails);
+			model.addAttribute("houseAttributes", houseAttributes);
+			model.addAttribute("houseAddress", houseAddress);
 
-		model.addAttribute("role", userdata.getUsertype());
+			model.addAttribute("role", userdata.getUsertype());
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to view house. Try again after sometime");
+			return "home/error";
+		}
 		return "houseowner/displaysinglehouse";
 	}
 
@@ -183,7 +197,7 @@ public class HouseOwnerController {
 			return "home/error";
 		}
 		UserModel userdata = homeService.findUser(messages.get(0));
-HouseModel house = houseOwnerService.getHouseById(id);
+		HouseModel house = houseOwnerService.getHouseById(id);
 
 		HouseDetailsModel houseDetails = houseOwnerService.getHouseDetailsById(id);
 		HouseAttributesModel houseAttributes = houseOwnerService.getHouseAttributes(id);
@@ -247,31 +261,46 @@ HouseModel house = houseOwnerService.getHouseById(id);
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-        model.addAttribute("sessionMessages", messages);
-        UserModel userdata = homeService.findUser(messages.get(0));
-        model.addAttribute("role", userdata.getUsertype());
+		try {
+			model.addAttribute("sessionMessages", messages);
+			UserModel userdata = homeService.findUser(messages.get(0));
+			model.addAttribute("role", userdata.getUsertype());
 
-        List<AppointmentModel> appointments = userService.getAllAppointmentsByUserId(userdata.getEmail());
+			List<AppointmentModel> appointments = userService.getAllAppointmentsByUserId(userdata.getEmail());
 
-        model.addAttribute("appointments", appointments);
+			model.addAttribute("appointments", appointments);
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to view appointments. Try again after sometime");
+			return "home/error";
+		}
 		return "houseowner/viewappointments";
 	}
 
 	@GetMapping("/reportStudent")
 	public String reportStudent(Model model, HttpSession session) {
-		
-		
+
+
 		@SuppressWarnings("unchecked")
-        List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
-		if(messages == null) {
+		List<String> messages = (List<String>) session.getAttribute("MY_SESSION_MESSAGES");
+		if (messages == null) {
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
+		try
+		{
 		UserModel userdata = homeService.findUser(messages.get(0));
 		List<UserModel> students = homeService.getAllStudents();
 		model.addAttribute("students", students);
 		model.addAttribute("report", report);
 		model.addAttribute("role", userdata.getUsertype());
+	}
+	catch(Exception e)
+	{
+		model.addAttribute("errormsg", "Unable to report student. Try again after sometime");
+		return "home/error";
+	}
 
 		return "houseowner/reportstudent";
 	}
@@ -303,10 +332,17 @@ HouseModel house = houseOwnerService.getHouseById(id);
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-		UserModel userdata = homeService.findUser(messages.get(0));
-		model.addAttribute("review", review);
-		model.addAttribute("usermail", userdata.getEmail());
-		model.addAttribute("role", userdata.getUsertype());
+		try {
+			UserModel userdata = homeService.findUser(messages.get(0));
+			model.addAttribute("review", review);
+			model.addAttribute("usermail", userdata.getEmail());
+			model.addAttribute("role", userdata.getUsertype());
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to get review. Try again after sometime");
+			return "home/error";
+		}
 
 		return "houseowner/reviewapp";
 	}
@@ -340,10 +376,17 @@ HouseModel house = houseOwnerService.getHouseById(id);
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-		UserModel userdata = homeService.findUser(messages.get(0));
-		model.addAttribute("ticket", ticket);
-		model.addAttribute("userMail", userdata.getEmail());
-		model.addAttribute("role", userdata.getUsertype());
+		try {
+			UserModel userdata = homeService.findUser(messages.get(0));
+			model.addAttribute("ticket", ticket);
+			model.addAttribute("userMail", userdata.getEmail());
+			model.addAttribute("role", userdata.getUsertype());
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to view tickets. Try again after sometime");
+			return "home/error";
+		}
 
 		return "houseowner/raiseticket";
 	}
@@ -393,9 +436,16 @@ HouseModel house = houseOwnerService.getHouseById(id);
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-		UserModel userdata = homeService.findUser(messages.get(0));
-		List<FAQModel> faqs = adminService.findAllFAQs();
-		model.addAttribute("faqs", faqs);
+		try {
+			UserModel userdata = homeService.findUser(messages.get(0));
+			List<FAQModel> faqs = adminService.findAllFAQs();
+			model.addAttribute("faqs", faqs);
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to view FAQ's. Try again after sometime");
+			return "home/error";
+		}
 		return "houseowner/viewfaqs";
 
 	}
@@ -408,9 +458,16 @@ HouseModel house = houseOwnerService.getHouseById(id);
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-		UserModel userdata = homeService.findUser(messages.get(0));
-		List<MessageModel> msgs = houseOwnerService.findAllMessages(userdata.getEmail());
-		model.addAttribute("msgs", msgs);
+		try {
+			UserModel userdata = homeService.findUser(messages.get(0));
+			List<MessageModel> msgs = houseOwnerService.findAllMessages(userdata.getEmail());
+			model.addAttribute("msgs", msgs);
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to view messages. Try again after sometime");
+			return "home/error";
+		}
 		return "houseowner/viewmsgs";
 
 	}
@@ -425,11 +482,18 @@ HouseModel house = houseOwnerService.getHouseById(id);
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-		UserModel userdata = homeService.findUser(messages.get(0));
+		try {
+			UserModel userdata = homeService.findUser(messages.get(0));
 
-		MessageModel msg = houseOwnerService.getMsgById(id);
-		model.addAttribute("msg", msg);
-		model.addAttribute("role", userdata.getUsertype());
+			MessageModel msg = houseOwnerService.getMsgById(id);
+			model.addAttribute("msg", msg);
+			model.addAttribute("role", userdata.getUsertype());
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to reply message. Try again after sometime");
+			return "home/error";
+		}
 
 		return "houseowner/replymessage";
 	}
@@ -464,10 +528,16 @@ HouseModel house = houseOwnerService.getHouseById(id);
 			return "home/error";
 		}
 		UserModel userdata = homeService.findUser(messages.get(0));
-
-		List<ReviewOwnerModel> myReviews = houseOwnerService.getAllMyReviews(userdata.getEmail());
-		model.addAttribute("myReviews", myReviews);
-		model.addAttribute("role", userdata.getUsertype());
+		try {
+			List<ReviewOwnerModel> myReviews = houseOwnerService.getAllMyReviews(userdata.getEmail());
+			model.addAttribute("myReviews", myReviews);
+			model.addAttribute("role", userdata.getUsertype());
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to show reviews. Try again after sometime");
+			return "home/error";
+		}
 		return "houseowner/viewownerreviews";
 	}
 
@@ -481,11 +551,18 @@ HouseModel house = houseOwnerService.getHouseById(id);
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-		UserModel userdata = homeService.findUser(messages.get(0));
+		try {
+			UserModel userdata = homeService.findUser(messages.get(0));
 
-		List<ReviewPropertyModel> reviews = houseOwnerService.getAllPropertyReviews(userdata.getEmail());
-		model.addAttribute("reviews", reviews);
-		model.addAttribute("role", userdata.getUsertype());
+			List<ReviewPropertyModel> reviews = houseOwnerService.getAllPropertyReviews(userdata.getEmail());
+			model.addAttribute("reviews", reviews);
+			model.addAttribute("role", userdata.getUsertype());
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to property reviews. Try again after sometime");
+			return "home/error";
+		}
 		return "houseowner/viewpropertyreviews";
 	}
 }
