@@ -115,8 +115,15 @@ public class HomeController {
 	@GetMapping("/login")
 	public String getLoginPage(Model model,  HttpSession session, HttpServletRequest request)
 	{
-		request.getSession().invalidate();
-		model.addAttribute("user", usermodel);
+		try {
+			request.getSession().invalidate();
+			model.addAttribute("user", usermodel);
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to get login page. Try again after sometime");
+			return "home/error";
+		}
 		return "home/login";
 	}
 	
@@ -169,14 +176,28 @@ public class HomeController {
 	@GetMapping("/forgotUsername")
 	public String getForgotUsernamePage(Model model)
 	{
-		model.addAttribute("user", usermodel);
+		try {
+			model.addAttribute("user", usermodel);
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to forgot username page. Try again after sometime");
+			return "home/error";
+		}
 		return "home/forgotusername";
 	}
 	
 	@GetMapping("/forgotPassword")
 	public String getForgotPasswordPage(Model model)
 	{
-		model.addAttribute("user", usermodel);
+		try {
+			model.addAttribute("user", usermodel);
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to load forgot password page. Try again after sometime");
+			return "home/error";
+		}
 		return "home/forgotpassword";
 	}
 	
@@ -279,15 +300,22 @@ public class HomeController {
 			model.addAttribute("errormsg", "Session Expired. Please Login Again");
 			return "home/error";
 		}
-		UserModel userdata = homeService.findUser(messages.get(0));
-		UserProfileModel userProfile = homeService.getUserProfile(userdata.getId());
-		UserSecurityModel userSecurity =  homeService.getUserSecurity(userdata.getId());
-		AddressModel userAddress = homeService.getUserAddress(userProfile.getId());
-		model.addAttribute("role", userdata.getUsertype());
-		model.addAttribute("user", userdata);
-		model.addAttribute("userProfile", userProfile);
-		model.addAttribute("userSecurity", userSecurity);
-		model.addAttribute("userAddress", userAddress);
+		try {
+			UserModel userdata = homeService.findUser(messages.get(0));
+			UserProfileModel userProfile = homeService.getUserProfile(userdata.getId());
+			UserSecurityModel userSecurity = homeService.getUserSecurity(userdata.getId());
+			AddressModel userAddress = homeService.getUserAddress(userProfile.getId());
+			model.addAttribute("role", userdata.getUsertype());
+			model.addAttribute("user", userdata);
+			model.addAttribute("userProfile", userProfile);
+			model.addAttribute("userSecurity", userSecurity);
+			model.addAttribute("userAddress", userAddress);
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to view profile. Try again after sometime");
+			return "home/error";
+		}
         return "home/profile";
     }
 	
@@ -340,10 +368,16 @@ public class HomeController {
 	
 	@GetMapping("/appReviews")
 	public String appReviews(Model model, HttpSession session) {
+		try {
+			List<ReviewModel> reviews = homeService.getAllReviews();
 
-		List<ReviewModel> reviews = homeService.getAllReviews();
-
-		model.addAttribute("reviews", reviews);
+			model.addAttribute("reviews", reviews);
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to show app reviews. Try again after sometime");
+			return "home/error";
+		}
 
 		return "home/appreviews";
 
