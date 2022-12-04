@@ -79,11 +79,11 @@ public class AdminController {
 
 	@GetMapping("/spamStudents")
 	public String getSpamStudents(Model model) {
-	try {
+
 		List<ReportModel> studentReports = adminService.findAllStudentReports();
 		model.addAttribute("reports", studentReports);
-	}
-	catch(Exception e)
+
+	if(studentReports==null)
 	{
 		model.addAttribute("errormsg", "Unable to load spam students. Try again after sometime");
 		return "home/error";
@@ -94,11 +94,11 @@ public class AdminController {
 
 	@GetMapping("/viewTickets")
 	public String viewTickets(Model model) {
-	try {
+
 		List<TicketModel> tickets = adminService.findAllTickets();
 		model.addAttribute("tickets", tickets);
-	}
-	catch(Exception e)
+
+	if(tickets==null)
 	{
 		model.addAttribute("errormsg", "Unable to view tickets. Try again after sometime");
 		return "home/error";
@@ -111,16 +111,27 @@ public class AdminController {
 	@GetMapping("/removeStudent/{id}")
 	public String removeSpamStudents(Model model, @PathVariable("id") Long id) {
 		System.out.println("id==== "+id);
-		adminService.removeStudent(id);
-		return "redirect:/admin";
-
+		int result = adminService.removeStudent(id);
+		if(result == 1) {
+			return "redirect:/admin";
+		}
+		else {
+			model.addAttribute("errormsg", "Can't remove Student as studen't doesn't exsist");
+			return "home/error";
+		}
 	}
 
 	@GetMapping("/removeTicket/{id}")
 	public String removeTicket(Model model, @PathVariable("id") Long id) {
 		System.out.println("id==== "+id);
-		adminService.removeTicket(id);
-		return "redirect:/admin";
+		int result = adminService.removeTicket(id);
+		if(result == 1) {
+			return "redirect:/admin";
+		}
+		else {
+			model.addAttribute("errormsg", "Can't remove Ticket - Failed Operation!");
+			return "home/error";
+		}
 
 	}
 
@@ -128,11 +139,10 @@ public class AdminController {
 
 	@GetMapping("/spamHouses")
 	public String getSpamHouses(Model model) {
-	try {
+
 		List<ReportModel> houseReports = adminService.findAllHousesReports();
 		model.addAttribute("reports", houseReports);
-	}
-	catch(Exception e)
+	if(houseReports == null)
 	{
 		model.addAttribute("errormsg", "Unable to get spam students. Try again after sometime");
 		return "home/error";
@@ -144,9 +154,13 @@ public class AdminController {
 	@GetMapping("/removeHouse/{id}")
 	public String removeSpamHouses(Model model, @PathVariable("id") Long id) {
 
-		adminService.removeHouse(id);
+		int result = adminService.removeHouse(id);
+		if(result==1)
 		return "redirect:/admin";
-
+		else {
+			model.addAttribute("errormsg", "Unable to remove spam house. Try again after sometime");
+			return "home/error";
+		}
 	}
 
 	@GetMapping("/announcement")
@@ -165,11 +179,19 @@ public class AdminController {
 
 
 	@PostMapping("/postAnnouncement")
-	public String postAnnouncement(@ModelAttribute("announcement") Announcement announcement) {
+	public String postAnnouncement(@ModelAttribute("announcement") Announcement announcement, Model model) {
 
-		adminService.addAnnouncement(announcement);
+		String result = adminService.addAnnouncement(announcement);
 
-		return "redirect:/admin";
+		System.out.println(result);
+
+		if(result.equals("1")) {
+			return "redirect:/admin";
+		}
+		else {
+			model.addAttribute("errormsg", "Not Posted Announcements");
+			return "home/error";
+		}
 
 	}
 
@@ -183,12 +205,10 @@ public class AdminController {
 
 	@GetMapping("/viewFaqs")
 	public String viewFaqsPage(Model model) {
-		try {
+
 			List<FAQModel> faqs = adminService.findAllFAQs();
 			model.addAttribute("faqs", faqs);
-		}
-		catch(Exception e)
-		{
+		if(faqs == null){
 			model.addAttribute("errormsg", "Unable to view faqs. Try again after sometime");
 			return "home/error";
 		}
@@ -198,9 +218,15 @@ public class AdminController {
 
 
 	@PostMapping("/postFaq")
-	public String postFaq(@ModelAttribute("faq") FAQModel faq) {
+	public String postFaq(@ModelAttribute("faq") FAQModel faq,Model model) {
 
-		adminService.addFaq(faq);
+		int result = adminService.addFaq(faq);
+
+		if(result==0)
+		{
+			model.addAttribute("errormsg", "Unable to post faqs. Try again after sometime");
+			return "home/error";
+		}
 
 		return "redirect:/admin";
 
@@ -210,14 +236,24 @@ public class AdminController {
 	public String editFaqPage(Model model, @PathVariable("id") Long id) {
 		FAQModel faq = adminService.findFAQById(id);
 		model.addAttribute("faq",faq );
+		if(faq==null)
+		{
+			model.addAttribute("errormsg", "Unable to edit faqs. Try again after sometime");
+			return "home/error";
+		}
 		return "admin/editfaq";
 
 	}
 
 	@PostMapping("/updateFaq")
-	public String updateFaq(@ModelAttribute("faq") FAQModel faq) {
+	public String updateFaq(@ModelAttribute("faq") FAQModel faq,Model model) {
 
-		adminService.addFaq(faq);
+		int result = adminService.addFaq(faq);
+		if(result==0)
+		{
+			model.addAttribute("errormsg", "Unable to Update faqs. Try again after sometime");
+			return "home/error";
+		}
 
 		return "redirect:/admin";
 
@@ -238,9 +274,14 @@ public class AdminController {
 	}
 
 	@PostMapping("/postCoupon")
-	public String updateFaq(@ModelAttribute("coupon") Coupon coupon) {
+	public String postCoupon(@ModelAttribute("coupon") Coupon coupon,Model model) {
 
-		adminService.addCoupon(coupon);
+		int result = adminService.addCoupon(coupon);
+		if(result==0)
+		{
+			model.addAttribute("errormsg", "Unable to post coupons. Try again after sometime");
+			return "home/error";
+		}
 
 		return "redirect:/admin";
 
@@ -279,9 +320,12 @@ public class AdminController {
 	public String VerifyHouse(Model model, @PathVariable(name="id") Long id) {
 
 
-		adminService.verifyHouse(id);
-
-
+		int result = adminService.verifyHouse(id);
+		if(result==0)
+		{
+			model.addAttribute("errormsg", "Unable to show verify houses list. Try again after sometime");
+			return "home/error";
+		}
 		return "redirect:/admin";
 
 	}

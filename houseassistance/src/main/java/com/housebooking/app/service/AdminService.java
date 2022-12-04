@@ -71,68 +71,145 @@ public class AdminService {
 
 	public String addAnnouncement(Announcement announcement) {
 
-		announcementRepo.save(announcement);
-		return "Announcement Saved Successfully";
+		try {
+			announcementRepo.save(announcement);
+		}
+		catch(Exception e)
+		{
+			return "0";
+		}
+		return "1";
 	}
 
 	public List<ReportModel> findAllStudentReports() {
 		// TODO Auto-generated method stub
-		List<ReportModel> reports = reportRepo.findAllByStudentType();
+		List<ReportModel> reports;
+		try {
+			 reports = reportRepo.findAllByStudentType();
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 		return reports;
 	}
 
 	public List<ReportModel> findAllHousesReports() {
-		List<ReportModel> reports = reportRepo.findAllByOwnerType();
+		List<ReportModel> reports;
+		try {
+			reports = reportRepo.findAllByOwnerType();
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 		return reports;
 	}
 
-	public void removeStudent(Long id) {
+	public int removeStudent(Long id) {
 		// TODO Auto-generated method stub
-		ReportModel report = reportRepo.findReportById(id);
-		System.out.println("report mail==== "+report.getUserMail());
-		UserModel user = homeRepo.findbyEmail(report.getUserMail());
-		homeRepo.deleteById(user.getId());
-		reportRepo.deleteById(id);
-
+		try {
+			ReportModel report = reportRepo.findReportById(id);
+			System.out.println("report mail==== " + report.getUserMail());
+			UserModel user = homeRepo.findbyEmail(report.getUserMail());
+			homeRepo.deleteById(user.getId());
+			reportRepo.deleteById(id);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+		return 1;
 
 	}
 
-	public void removeHouse(Long id) {
-		ReportModel report = reportRepo.findReportById(id);
-		HouseDetailsModel house = houseDetailsRepo.findbyHouseName(report.getHouseName());
-		System.out.println(report.getHouseName());
-		System.out.println(house.getId());
-		houseOwnerService.deleteHouse(house.getId());
-		reportRepo.deleteById(id);
+	public int removeHouse(Long id) {
+            try {
+				ReportModel report = reportRepo.findReportById(id);
+				HouseDetailsModel house = houseDetailsRepo.findbyHouseName(report.getHouseName());
+				//System.out.println(report.getHouseName());
+				//System.out.println(house.getId());
+				houseOwnerService.deleteHouse(house.getId());
+				reportRepo.deleteById(id);
+			}
+			catch (Exception e)
+			{
+				return 0;
+			}
+
+			return 1;
+
 	}
 
 	public List<TicketModel> findAllTickets() {
-		List<TicketModel> tickets = ticketRepo.findAll();
+		List<TicketModel> tickets;
+		try {
+			tickets = ticketRepo.findAll();
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 		return tickets;
 	}
 
-	public void removeTicket(Long id) {
-		ticketRepo.deleteById(id);
+	public int removeTicket(Long id) {
+		try {
+			ticketRepo.deleteById(id);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+		return 1;
 	}
 
 	public List<FAQModel> findAllFAQs() {
-		List<FAQModel> faqs = faqRepo.findAll();
+		List<FAQModel> faqs;
+		try {
+			 faqs = faqRepo.findAll();
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 		return faqs;
 	}
 
-	public void addFaq(FAQModel faq) {
-		faqRepo.save(faq);
+	public int addFaq(FAQModel faq) {
+		try {
+			faqRepo.save(faq);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+		return 1;
 
 	}
 
 	public FAQModel findFAQById(Long id) {
-		FAQModel faq = faqRepo.findFAQById(id);
+		FAQModel faq;
+		try {
+			 faq = faqRepo.findFAQById(id);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 		return faq;
 	}
 
-	public void addCoupon(Coupon coupon) {
+	public int addCoupon(Coupon coupon) {
 		// TODO Auto-generated method stub
-		couponRepo.save(coupon);
+		try {
+			couponRepo.save(coupon);
+		}
+		catch(Exception e)
+		{
+			return 0;
+		}
+		return 1;
 	}
 
 	public List<HouseDocumentModel> getAllNotVerifiedHouses() {
@@ -154,17 +231,23 @@ List<HouseDocumentModel> houseDocs = new ArrayList<HouseDocumentModel>();
 		return houseDocsRepo.findHouseDocument(id);
 	}
 
-	public void verifyHouse(Long id) {
+	public int verifyHouse(Long id) {
 		// TODO Auto-generated method stub
+        try {
+			HouseStatusModel houseStatus = houseStatusRepo.findHouseStatus(id);
 
-		HouseStatusModel houseStatus = houseStatusRepo.findHouseStatus(id);
+			houseStatus.setIsVerified("1");
+			houseStatusRepo.save(houseStatus);
 
-		houseStatus.setIsVerified("1");
-		houseStatusRepo.save(houseStatus);
+			HousePropertiesModel houseProperty = housePropertiesRepo.findHouseProperties(id);
 
-		HousePropertiesModel houseProperty = housePropertiesRepo.findHouseProperties(id);
-
-		houseProperty.setIsVerified("1");
+			houseProperty.setIsVerified("1");
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+		return 1;
 
 	}
 
