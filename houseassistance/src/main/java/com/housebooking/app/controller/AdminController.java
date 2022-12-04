@@ -79,18 +79,31 @@ public class AdminController {
 
 	@GetMapping("/spamStudents")
 	public String getSpamStudents(Model model) {
-
+	try {
 		List<ReportModel> studentReports = adminService.findAllStudentReports();
 		model.addAttribute("reports", studentReports);
+	}
+	catch(Exception e)
+	{
+		model.addAttribute("errormsg", "Unable to load spam students. Try again after sometime");
+		return "home/error";
+	}
 		return "admin/spamstudents";
 
 	}
 
 	@GetMapping("/viewTickets")
 	public String viewTickets(Model model) {
-
+	try {
 		List<TicketModel> tickets = adminService.findAllTickets();
-		model.addAttribute("tickets",tickets);
+		model.addAttribute("tickets", tickets);
+	}
+	catch(Exception e)
+	{
+		model.addAttribute("errormsg", "Unable to view tickets. Try again after sometime");
+		return "home/error";
+	}
+
 		return "admin/viewtickets";
 
 	}
@@ -115,9 +128,15 @@ public class AdminController {
 
 	@GetMapping("/spamHouses")
 	public String getSpamHouses(Model model) {
-
+	try {
 		List<ReportModel> houseReports = adminService.findAllHousesReports();
 		model.addAttribute("reports", houseReports);
+	}
+	catch(Exception e)
+	{
+		model.addAttribute("errormsg", "Unable to get spam students. Try again after sometime");
+		return "home/error";
+	}
 		return "admin/spamowners";
 
 	}
@@ -132,8 +151,14 @@ public class AdminController {
 
 	@GetMapping("/announcement")
 	public String getAnnouncementPage(Model model) {
-
-		model.addAttribute("announcement", announcement);
+		try {
+			model.addAttribute("announcement", announcement);
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to get announcements page. Try again after sometime");
+			return "home/error";
+		}
 		return "admin/addannouncement";
 
 	}
@@ -158,9 +183,15 @@ public class AdminController {
 
 	@GetMapping("/viewFaqs")
 	public String viewFaqsPage(Model model) {
-
-		List<FAQModel> faqs = adminService.findAllFAQs();
-		model.addAttribute("faqs", faqs);
+		try {
+			List<FAQModel> faqs = adminService.findAllFAQs();
+			model.addAttribute("faqs", faqs);
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to view faqs. Try again after sometime");
+			return "home/error";
+		}
 		return "admin/viewfaqs";
 
 	}
@@ -194,8 +225,14 @@ public class AdminController {
 
 	@GetMapping("/coupon")
 	public String viewCouponPage(Model model) {
-
-		model.addAttribute("coupon",coupon);
+		try {
+			model.addAttribute("coupon", coupon);
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("errormsg", "Unable to view coupons page. Try again after sometime");
+			return "home/error";
+		}
 		return "admin/coupon";
 
 	}
@@ -212,11 +249,16 @@ public class AdminController {
 	@GetMapping("/verify")
 	public String viewVerifyPage(Model model) {
 
-
+	try {
 		List<HouseDocumentModel> houses = adminService.getAllNotVerifiedHouses();
 
 		model.addAttribute("houses", houses);
-
+	}
+	catch(Exception e)
+	{
+		model.addAttribute("errormsg", "Unable to view verify page. Try again after sometime");
+		return "home/error";
+	}
 		return "admin/verifydocuments";
 
 	}
