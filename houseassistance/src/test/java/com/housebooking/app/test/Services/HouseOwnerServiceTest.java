@@ -187,6 +187,91 @@ public class HouseOwnerServiceTest {
 		assertEquals(null,result);
 	}
 
+	@Test
+	public void getHouseDetailsByIdTest(){
+		when(houseDetailsRepo.findHouseDetails(any())).thenReturn(TestUtils.getHouseDetailsModel());
+		HouseDetailsModel result = houseOwnerService.getHouseDetailsById(123l);
+		assertEquals(TestUtils.getHouseDetailsModel(),result);
+	}
+
+	@Test
+	public void getHouseDetailsById_negativeTest(){
+		when(houseDetailsRepo.findHouseDetails(any())).thenThrow(NullPointerException.class);
+		HouseDetailsModel result = houseOwnerService.getHouseDetailsById(123l);
+		assertEquals(null,result);
+	}
+
+	@Test
+	public void getHouseAttributesTest(){
+		when(houseAttributesRepo.findHouseAttributes(any())).thenReturn(TestUtils.getHouseAttributesModel());
+		HouseAttributesModel result = houseOwnerService.getHouseAttributes(123l);
+		assertEquals(TestUtils.getHouseAttributesModel(),result);
+	}
+	@Test
+	public void getHouseAttributes_NegativeTest(){
+		when(houseAttributesRepo.findHouseAttributes(any())).thenThrow(NullPointerException.class);
+		HouseAttributesModel result = houseOwnerService.getHouseAttributes(123l);
+		assertEquals(null,result);
+	}
+
+	@Test
+	public void getHouseAddressTest(){
+		when(addressRepo.findHouseAddress(any())).thenReturn(TestUtils.getAddressModel());
+		AddressModel result = houseOwnerService.getHouseAddress(123l);
+		assertEquals(TestUtils.getAddressModel(),result);
+	}
+
+	@Test
+	public void getHouseAddress_negativeTest(){
+		when(addressRepo.findHouseAddress(any())).thenReturn(TestUtils.getAddressModel());
+		AddressModel result = houseOwnerService.getHouseAddress(123l);
+		assertEquals(TestUtils.getAddressModel(),result);
+	}
+
+	@Test
+	public void getAllMyReviewsTest()
+	{
+		List<ReviewOwnerModel> reviewOwnerModels = new ArrayList<>();
+		reviewOwnerModels.add(TestUtils.getReviewOwnerModel());
+		when(reviewOwnerRepo.findMyAllReviews(any())).thenReturn(reviewOwnerModels);
+		List<ReviewOwnerModel> result = houseOwnerService.getAllMyReviews("rachana.marri@gmail.com");
+		assertEquals(reviewOwnerModels,result);
+
+	}
+
+	@Test
+	public void getAllMyReviews_negativeTest()
+	{
+		when(reviewOwnerRepo.findMyAllReviews(any())).thenThrow(NullPointerException.class);
+		List<ReviewOwnerModel> result = houseOwnerService.getAllMyReviews("rachana.marri@gmail.com");
+		assertEquals(null,result);
+	}
+
+	@Test
+	public void getAllPropertyReviewsTest()
+	{
+		List<ReviewPropertyModel> reviews = new  ArrayList<ReviewPropertyModel>();
+		reviews.add(TestUtils.getReviewPropertyModel());
+		List<HouseModel> houseModels = new ArrayList<>();
+		houseModels.add(TestUtils.getHouseModel());
+		when(reviewPropertyRepo.findAll()).thenReturn((reviews));
+		when(houseRepo.findAll()).thenReturn(houseModels);
+		List<ReviewPropertyModel> results = houseOwnerService.getAllPropertyReviews("rachana.marri@gmail.com");
+		assertEquals(reviews,results);
+	}
+
+	@Test
+	public void getAllPropertyReviewsTest_negativeTest()
+	{
+		List<ReviewPropertyModel> reviews = new  ArrayList<ReviewPropertyModel>();
+		reviews.add(TestUtils.getReviewPropertyModel());
+		List<HouseModel> houseModels = new ArrayList<>();
+		houseModels.add(TestUtils.getHouseModel());
+		when(reviewPropertyRepo.findAll()).thenThrow(NullPointerException.class);
+		List<ReviewPropertyModel> results = houseOwnerService.getAllPropertyReviews("rachana123.marri@gmail.com");
+		assertEquals(null,results);
+	}
+
 
 
 
