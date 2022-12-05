@@ -16,15 +16,28 @@ public class CommonService {
 	@Autowired
 	private TicketRepo ticketRepo;
 	
-	public void saveReview(ReviewModel review) {
-		// TODO Auto-generated method stub
-		reviewRepo.save(review);
+	public int saveReview(ReviewModel review) {
+		try {
+			// TODO Auto-generated method stub
+			reviewRepo.save(review);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+		return 1;
 	}
 
-	public void saveTicket(TicketModel ticket) {
+	public int saveTicket(TicketModel ticket) {
 		// TODO Auto-generated method stub
-		ticketRepo.save(ticket);
-		
+		try {
+			ticketRepo.save(ticket);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+		return 1;
 	}
 
 }
