@@ -272,6 +272,54 @@ public class HouseOwnerServiceTest {
 		assertEquals(null,results);
 	}
 
+	@Test
+	public void saveHouseTest()
+	{
+		MultipartFile multipartFileImg = new MockMultipartFile("Test",TestUtils.getHouseDocumentModel().getDocument());
+		MultipartFile multipartFileDoc = new MockMultipartFile("Test",TestUtils.getHouseDocumentModel().getDocument());
+		when(houseRepo.save(any())).thenReturn(TestUtils.getHouseModel());
+		when(houseDetailsRepo.save(any())).thenReturn(TestUtils.getHouseDetailsModel());
+		when(houseAttributesRepo.save(any())).thenReturn(TestUtils.getHouseAttributesModel());
+		when(houseDocumentRepo.save(any())).thenReturn(TestUtils.getHouseDocumentModel());
+		when(housePropertiesRepo.save(any())).thenReturn(TestUtils.getHousePropertiesModel());
+		when(houseLikeOrDislikeRepo.save(any())).thenReturn(TestUtils.getHouseLikeOrDislikeModel());
+		when(houseStatusRepo.save(any())).thenReturn(TestUtils.getHouseStatusModel());
+		when(userProfileRepo.findUserProfile(any())).thenReturn(TestUtils.getUserProfileModel());
+		when(addressRepo.save(any())).thenReturn(TestUtils.getAddressModel());
+		when(homeRepo.findbyEmail(any())).thenReturn(TestUtils.getUserModel());
+		houseOwnerService.saveHouse(TestUtils.getHouseModel(), "rachana.marri@gmail.com",multipartFileImg,multipartFileDoc, "test",
+				"2000", "8767898765", "4",  "2","18",
+				"Mulberry", "Normal", "61761", "Yes","No","Yes", "01-12-2022");
+		verify(houseRepo,times(1)).save(any());
+		verify(addressRepo,times(1)).save(any());
+	}
+
+	@Test
+	public void updateHouse_test()
+	{
+		MultipartFile multipartFileImg = new MockMultipartFile("Test",TestUtils.getHouseDocumentModel().getDocument());
+		MultipartFile multipartFileDoc = new MockMultipartFile("Test",TestUtils.getHouseDocumentModel().getDocument());
+		when(houseRepo.save(any())).thenReturn(TestUtils.getHouseModel());
+		when(houseDetailsRepo.findHouseDetails(any())).thenReturn(TestUtils.getHouseDetailsModel());
+		when(houseDetailsRepo.save(any())).thenReturn(TestUtils.getHouseDetailsModel());
+		when(houseAttributesRepo.findHouseAttributes(any())).thenReturn(TestUtils.getHouseAttributesModel());
+		when(houseAttributesRepo.save(any())).thenReturn(TestUtils.getHouseAttributesModel());
+		when(houseDocumentRepo.save(any())).thenReturn(TestUtils.getHouseDocumentModel());
+		when(houseDocumentRepo.findHouseDocument(any())).thenReturn(TestUtils.getHouseDocumentModel());
+		when(houseDocumentRepo.save(any())).thenReturn(TestUtils.getHouseDocumentModel());
+		when(housePropertiesRepo.findHouseProperties(any())).thenReturn(TestUtils.getHousePropertiesModel());
+		when(housePropertiesRepo.save(any())).thenReturn(TestUtils.getHousePropertiesModel());
+		when(houseStatusRepo.findHouseStatus(any())).thenReturn(TestUtils.getHouseStatusModel());
+		when(addressRepo.findHouseAddress(any())).thenReturn(TestUtils.getAddressModel());
+		when(addressRepo.save(any())).thenReturn(TestUtils.getAddressModel());
+		houseOwnerService.updateHouse(TestUtils.getHouseModel(), "rachana.marri@gmail.com",multipartFileImg,multipartFileDoc, "test",
+				"2000", "8767898765", "4",  "2","18",
+				"Mulberry", "Normal", "61761", "Yes","No","Yes", "1","1","01-12-2022");
+		verify(houseRepo,times(1)).save(any());
+		verify(addressRepo,times(1)).save(any());
+
+	}
+
 
 
 
