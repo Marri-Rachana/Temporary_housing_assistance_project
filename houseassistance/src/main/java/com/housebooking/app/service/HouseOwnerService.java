@@ -164,10 +164,8 @@ public class HouseOwnerService {
 		houseStatusRepo.save(houseStatus);
 
 		AddressModel address = new AddressModel();
-
-
-		 UserProfileModel userProfile = userProfileRepo.findUserProfile(homeRepo.findbyEmail(houseOwneremail).getId());
-
+		UserProfileModel userProfile;
+			  userProfile = userProfileRepo.findUserProfile(homeRepo.findbyEmail(houseOwneremail).getId());
 		address.setProfileId(userProfile.getId());
 		address.setCity(city);
 		address.setDoorNo(doorNo);
@@ -182,57 +180,88 @@ public class HouseOwnerService {
 
 	public HouseModel getHouse() {
 		// TODO Auto-generated method stub
-		return houseRepo.findAll().get(0);
+		HouseModel houseModel;
+		try {
+			houseModel = houseRepo.findAll().get(0);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return houseModel;
 	}
 
 	public List<HouseModel> getAllHousesByEmail(String emailId) {
 		// TODO Auto-generated method stub
-		List<HouseModel> houses = houseRepo.findAllByEmailId(emailId);
-
+		List<HouseModel> houses;
+		try {
+			houses = houseRepo.findAllByEmailId(emailId);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 //		houses.forEach(house -> house.setHouseImage(Base64.getEncoder().encodeToString(house.getHousePhoto())));
 		return houses;
 	}
 
-	public void deleteHouse(Long id) {
+	public int deleteHouse(Long id) {
 		// TODO Auto-generated method stub
-		AddressModel address = addressRepo.findHouseAddress(id);
-		addressRepo.deleteById(address.getId());
+		try {
+			AddressModel address = addressRepo.findHouseAddress(id);
+			addressRepo.deleteById(address.getId());
 
-		houseStatusRepo.deleteById(id);
-		houseLikeOrDislikeRepo.deleteById(id);
-		houseAttributesRepo.deleteById(id);
-		housePropertiesRepo.deleteById(id);
-		houseDetailsRepo.deleteById(id);
-		houseDocumentRepo.deleteById(id);
-		houseRepo.deleteById(id);
+			houseStatusRepo.deleteById(id);
+			houseLikeOrDislikeRepo.deleteById(id);
+			houseAttributesRepo.deleteById(id);
+			housePropertiesRepo.deleteById(id);
+			houseDetailsRepo.deleteById(id);
+			houseDocumentRepo.deleteById(id);
+			houseRepo.deleteById(id);
 
-		List<FavouritesModel> favourites = favouritesRepo.findAll();
+			List<FavouritesModel> favourites = favouritesRepo.findAll();
 
-		List<FavouritesModel> favos = new ArrayList<FavouritesModel>();
+			List<FavouritesModel> favos = new ArrayList<FavouritesModel>();
 
-		favourites.forEach(fav -> {
-			if(fav.getHouseId().equals(id.toString())) {
-				favos.add(fav);
-			}
-		});
+			favourites.forEach(fav -> {
+				if (fav.getHouseId().equals(id.toString())) {
+					favos.add(fav);
+				}
+			});
 
-		favouritesRepo.deleteAll(favos);
-
-
+			favouritesRepo.deleteAll(favos);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+		return 1;
 
 	}
 
 	public HouseModel getHouseById(Long id) {
 		// TODO Auto-generated method stub
-
-		HouseModel house = houseRepo.findHouseById(id);
-//		System.out.println(house.getHouseAddress());
+		HouseModel house;
+        try {
+			house = houseRepo.findHouseById(id);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 		return house;
 	}
 
-	public void saveReport(ReportModel report) {
+	public int saveReport(ReportModel report) {
 		// TODO Auto-generated method stub
-		reportRepo.save(report);
+		try {
+			reportRepo.save(report);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+		return 1;
 	}
 
 
@@ -246,37 +275,70 @@ public class HouseOwnerService {
 
 	public MessageModel getMsgById(Long id) {
 		// TODO Auto-generated method stub
-		return messageRepo.findMessageById(id);
-
+		MessageModel messageModel;
+		try {
+			messageModel = messageRepo.findMessageById(id);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+        return messageModel;
 	}
 
 	public List<HouseDetailsModel> getAllHousesDetailsByEmail(String email) {
 		// TODO Auto-generated method stub
-
-		List<HouseModel> houses = houseRepo.findAllByEmailId(email);
-
 		List<HouseDetailsModel> houseDetails = new ArrayList<HouseDetailsModel>();
+      try {
+		  List<HouseModel> houses = houseRepo.findAllByEmailId(email);
 
-		houses.forEach(house -> {
-			houseDetails.add(houseDetailsRepo.findHouseDetails(house.getId()));
-		});
+		  houses.forEach(house -> {
+			  houseDetails.add(houseDetailsRepo.findHouseDetails(house.getId()));
+		  });
+	  }
+	  catch (Exception e)
+	  {
+		  return null;
+	  }
 
 		return houseDetails;
 	}
 
 	public HouseDetailsModel getHouseDetailsById(Long id) {
 		// TODO Auto-generated method stub
-		return houseDetailsRepo.findHouseDetails(id);
+		HouseDetailsModel houseDetailsModel;
+		try {
+			houseDetailsModel = houseDetailsRepo.findHouseDetails(id);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return houseDetailsModel;
 	}
 
 	public HouseAttributesModel getHouseAttributes(Long id) {
 		// TODO Auto-generated method stub
-		return houseAttributesRepo.findHouseAttributes(id);
+		HouseAttributesModel houseAttributesModel;
+		try {
+			houseAttributesModel = houseAttributesRepo.findHouseAttributes(id);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return houseAttributesModel;
 	}
 
 	public AddressModel getHouseAddress(Long id) {
 		// TODO Auto-generated method stub
-		return addressRepo.findHouseAddress(id);
+		AddressModel addressModel;
+		try{
+			addressModel = addressRepo.findHouseAddress(id);
+		} catch (Exception e){
+			return null;
+		}
+		return addressModel;
 	}
 
 	public void updateHouse(HouseModel house, String houseOwneremail, MultipartFile houseImage, MultipartFile doc,
@@ -384,26 +446,38 @@ public class HouseOwnerService {
 
 	public List<ReviewOwnerModel> getAllMyReviews(String email) {
 		// TODO Auto-generated method stub
-		return reviewOwnerRepo.findMyAllReviews(email);
+		List<ReviewOwnerModel> reviewOwnerModels;
+		try {
+			reviewOwnerModels = reviewOwnerRepo.findMyAllReviews(email);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return reviewOwnerModels;
 	}
 
 	public List<ReviewPropertyModel> getAllPropertyReviews(String email) {
 		// TODO Auto-generated method stub
 
 		 List<ReviewPropertyModel> reviews = new  ArrayList<ReviewPropertyModel>();
+		 try {
 
-		reviewPropertyRepo.findAll().forEach(property -> {
+			 reviewPropertyRepo.findAll().forEach(property -> {
 
-			houseRepo.findAll().forEach(house -> {
-				if(property.getHouseId().equals(house.getId().toString()) && house.getHouseOwnerMail().equals(email)) {
-					reviews.add(property);
-				}
-			});
+				 houseRepo.findAll().forEach(house -> {
+					 if (property.getHouseId().equals(house.getId().toString()) && house.getHouseOwnerMail().equals(email)) {
+						 reviews.add(property);
+					 }
+				 });
 
-		});
-
-
-		return reviews;
+			 });
+		 }
+		 catch (Exception e)
+		 {
+			 return null;
+		 }
+		 return reviews;
 	}
 
 
