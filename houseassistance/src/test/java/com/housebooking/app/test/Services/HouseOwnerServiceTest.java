@@ -223,9 +223,9 @@ public class HouseOwnerServiceTest {
 
 	@Test
 	public void getHouseAddress_negativeTest(){
-		when(addressRepo.findHouseAddress(any())).thenReturn(TestUtils.getAddressModel());
+		when(addressRepo.findHouseAddress(any())).thenThrow(NullPointerException.class);
 		AddressModel result = houseOwnerService.getHouseAddress(123l);
-		assertEquals(TestUtils.getAddressModel(),result);
+		assertEquals(null,result);
 	}
 
 	@Test
@@ -317,6 +317,26 @@ public class HouseOwnerServiceTest {
 				"Mulberry", "Normal", "61761", "Yes","No","Yes", "1","1","01-12-2022");
 		verify(houseRepo,times(1)).save(any());
 		verify(addressRepo,times(1)).save(any());
+
+	}
+
+	@Test
+	public void findAllMessages()
+	{
+		List<MessageModel> messageModels = new ArrayList<>();
+		when(messageRepo.findAll()).thenReturn(messageModels);
+		List<MessageModel> results = houseOwnerService.findAllMessages("rachana.marri@gmail.com");
+		assertEquals(messageModels,results);
+
+	}
+
+	@Test
+	public void findAllMessages_negativeTest()
+	{
+		List<MessageModel> messageModels = new ArrayList<>();
+		when(messageRepo.findAll()).thenThrow(NullPointerException.class);
+		List<MessageModel> results = houseOwnerService.findAllMessages("rachana.marri@gmail.com");
+		assertEquals(null,results);
 
 	}
 

@@ -268,8 +268,15 @@ public class HouseOwnerService {
 
 	public List<MessageModel> findAllMessages(String email) {
 		// TODO Auto-generated method stub
-		List<MessageModel> msgs = messageRepo.findAll();
-		List<MessageModel> studentMsgs = msgs.stream().filter(msg -> msg.getOwnerMail().equals(email) && msg.getAnswer().equals("")).collect(Collectors.toList());
+		List<MessageModel> studentMsgs;
+		try {
+			List<MessageModel> msgs = messageRepo.findAll();
+			studentMsgs = msgs.stream().filter(msg -> msg.getOwnerMail().equals(email) && msg.getAnswer().equals("")).collect(Collectors.toList());
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 		return studentMsgs;
 	}
 
