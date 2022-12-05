@@ -97,16 +97,22 @@ public class UserService {
 	private CouponRepo couponRepo;
 
 	public List<HouseDetailsModel> getAllHouseDetails(){
+		List<HouseDetailsModel> houseDetails;
+        try {
+			 houseDetails = new ArrayList<HouseDetailsModel>();
 
-		List<HouseDetailsModel> houseDetails = new ArrayList<HouseDetailsModel>();
+			List<HouseStatusModel> houseStatus = houseStatusRepo.findAll();
 
-		List<HouseStatusModel> houseStatus = houseStatusRepo.findAll();
-
-		houseStatus.forEach(status -> {
-			if(status.getIsBooked().equals("0") && status.getIsHide().equals("0") && status.getIsVerified().equals("1")) {
-				houseDetails.add(houseDetailsRepo.findHouseDetails(status.getId()));
-			}
-		});
+			houseStatus.forEach(status -> {
+				if (status.getIsBooked().equals("0") && status.getIsHide().equals("0") && status.getIsVerified().equals("1")) {
+					houseDetails.add(houseDetailsRepo.findHouseDetails(status.getId()));
+				}
+			});
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 
 		return houseDetails;
 	}
@@ -162,9 +168,16 @@ public class UserService {
 
 	}
 
-	public void savefavourites(FavouritesModel favourite) {
+	public int savefavourites(FavouritesModel favourite) {
 		// TODO Auto-generated method stub
-		favouritesRepo.save(favourite);
+		try {
+			favouritesRepo.save(favourite);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+		return 1;
 	}
 
 	public void likeHouse(Long id, Long userId) {
@@ -231,72 +244,114 @@ public class UserService {
 
 	}
 
-	public void saveAppointment(AppointmentModel appointment) {
-
-		appointmentRepo.save(appointment);
-
-
+	public int saveAppointment(AppointmentModel appointment) {
+        try {
+			appointmentRepo.save(appointment);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+        return 1;
 	}
 
 	public List<AppointmentModel> getAllAppointmentsByUserId(String email) {
+		List<AppointmentModel> appointments;
+		try {
+			appointments = new ArrayList<AppointmentModel>();
 
-		List<AppointmentModel> appointments = new ArrayList<AppointmentModel>();
+			appointmentRepo.findAll().forEach(apt -> {
 
-		appointmentRepo.findAll().forEach(apt -> {
+				houseRepo.findAll().forEach(house -> {
+					if (apt.getHouseId().equals(house.getId().toString()) && house.getHouseOwnerMail().equals(email)) {
+						appointments.add(apt);
+					}
+				});
 
-			houseRepo.findAll().forEach(house -> {
-				if(apt.getHouseId().equals(house.getId().toString()) && house.getHouseOwnerMail().equals(email)) {
-					appointments.add(apt);
-				}
 			});
-
-		});
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 
 		return appointments;
 	}
 
-	public void saveReviewOwner(ReviewOwnerModel review) {
-
-		reviewOwnerRepo.save(review);
+	public int saveReviewOwner(ReviewOwnerModel review) {
+		try {
+			reviewOwnerRepo.save(review);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+		return 1;
 	}
 
-	public void saveMsg(MessageModel msg) {
-		messageRepo.save(msg);
-
+	public int saveMsg(MessageModel msg) {
+		try {
+			messageRepo.save(msg);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+        return 1;
 	}
 
 	public List<MessageModel> findAllMessages(String email) {
 		// TODO Auto-generated method stub
-		List<MessageModel> msgs = messageRepo.findAll();
-		List<MessageModel> ownerMsgs = msgs.stream().filter(msg -> msg.getStudentMail().equals(email) && !msg.getAnswer().equals("")).collect(Collectors.toList());
+		List<MessageModel> ownerMsgs;
+		try {
+			List<MessageModel> msgs = messageRepo.findAll();
+			ownerMsgs = msgs.stream().filter(msg -> msg.getStudentMail().equals(email) && !msg.getAnswer().equals("")).collect(Collectors.toList());
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 		return ownerMsgs;
 	}
 
 	public List<HouseDetailsModel> searchHouses(String searchKey) {
 		// TODO Auto-generated method stub
-		List<HouseDetailsModel> houses = houseDetailsRepo.findAll();
-		List<HouseDetailsModel> searchedHouses = houses.stream().filter(house -> house.getHouseName().contains(searchKey) ||
-				house.getHouseRent().equals(searchKey) || house.getAvailableFrom().contains(searchKey)
-				|| house.getNoOfBedrooms().equals(searchKey)|| house.getNoOfBathrooms().equals(searchKey)).collect(Collectors.toList());
-		return searchedHouses;
-
+		List<HouseDetailsModel> searchedHouses;
+		try {
+			List<HouseDetailsModel> houses = houseDetailsRepo.findAll();
+			 searchedHouses = houses.stream().filter(house -> house.getHouseName().contains(searchKey) ||
+					house.getHouseRent().equals(searchKey) || house.getAvailableFrom().contains(searchKey)
+					|| house.getNoOfBedrooms().equals(searchKey) || house.getNoOfBathrooms().equals(searchKey)).collect(Collectors.toList());
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+        return searchedHouses;
 	}
 
 	public List<HouseDetailsModel> filterHouses(String city, String moveInDate) {
 		// TODO Auto-generated method stub
-		List<HouseDetailsModel> houses = houseDetailsRepo.findAll();
+		List<HouseDetailsModel> filteredHouses;
+		try {
+			List<HouseDetailsModel> houses = houseDetailsRepo.findAll();
 
-		List<HouseDetailsModel> filteredHouses = houses.stream().filter(house -> house.getAvailableFrom().equals(moveInDate)).collect(Collectors.toList());
+			filteredHouses = houses.stream().filter(house -> house.getAvailableFrom().equals(moveInDate)).collect(Collectors.toList());
 
-		addressRepo.findAll().forEach(address -> {
-			if(address.getCity().equals(city)) {
-				houseDetailsRepo.findAll().forEach(details -> {
-					if(details.getId().equals(address.getHouseId())) {
-						filteredHouses.add(details);
-					}
-				});
-			}
-		});
+			addressRepo.findAll().forEach(address -> {
+				if (address.getCity().equals(city)) {
+					houseDetailsRepo.findAll().forEach(details -> {
+						if (details.getId().equals(address.getHouseId())) {
+							filteredHouses.add(details);
+						}
+					});
+				}
+			});
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 
 		return filteredHouses.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(HouseDetailsModel::getId))),
                 ArrayList::new));
@@ -308,35 +363,40 @@ public class UserService {
 
 
 		List<HouseDetailsModel> advnaceFilteredHouses  = new ArrayList<HouseDetailsModel>();
+        try {
+			houseRepo.findAll().forEach(house -> {
+				if (house.getHouseType().equals(houseType)) {
+					advnaceFilteredHouses.add(houseDetailsRepo.findHouseDetails(house.getId()));
+				}
+			});
 
-		houseRepo.findAll().forEach(house -> {
-			if(house.getHouseType().equals(houseType)) {
-				advnaceFilteredHouses.add(houseDetailsRepo.findHouseDetails(house.getId()));
-			}
-		});
+			addressRepo.findAll().forEach(address -> {
+				if (address.getCity().equals(city)) {
+					houseDetailsRepo.findAll().forEach(details -> {
+						if (details.getId().equals(address.getHouseId())) {
+							advnaceFilteredHouses.add(details);
+						}
+					});
+				}
+			});
 
-		addressRepo.findAll().forEach(address -> {
-			if(address.getCity().equals(city)) {
-				houseDetailsRepo.findAll().forEach(details -> {
-					if(details.getId().equals(address.getHouseId())) {
-						advnaceFilteredHouses.add(details);
-					}
-				});
-			}
-		});
+			houseDetailsRepo.findAll().forEach(details -> {
+				if (details.getAvailableFrom().equals(moveInDate)) {
+					advnaceFilteredHouses.add(details);
+				}
+			});
 
-		houseDetailsRepo.findAll().forEach(details -> {
-			if(details.getAvailableFrom().equals(moveInDate)) {
-				advnaceFilteredHouses.add(details);
-			}
-		});
+			houseAttributesRepo.findAll().forEach(attr -> {
 
-		houseAttributesRepo.findAll().forEach(attr -> {
-
-			if(attr.getLawn().equals(lawn) || attr.getParking().equals(parking) || attr.getPetFriendly().equals(petFriendly)) {
-				advnaceFilteredHouses.add(attr.getDetails());
-			}
-		});
+				if (attr.getLawn().equals(lawn) || attr.getParking().equals(parking) || attr.getPetFriendly().equals(petFriendly)) {
+					advnaceFilteredHouses.add(attr.getDetails());
+				}
+			});
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 
 		return advnaceFilteredHouses.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(HouseDetailsModel::getId))),
                 ArrayList::new));
@@ -344,67 +404,91 @@ public class UserService {
 
 	public List<HouseDetailsModel> sort(String price) {
 		// TODO Auto-generated method stub
-		List<HouseDetailsModel> houses = houseDetailsRepo.findAll();
-		String startprice,endprice;
-		int sp,ep;
-		startprice=price.split("to")[0];
-		System.out.println("-------------"+startprice);
-		endprice=price.split("to")[1];
-		sp= Integer.parseInt(startprice);
-		ep= Integer.parseInt(endprice);
-		List<HouseDetailsModel> advnaceFilteredHouses = houses.stream().filter(
-				house -> Integer.parseInt(house.getHouseRent()) >= sp && Integer.parseInt(house.getHouseRent()) <= ep).collect(Collectors.toList());
 
-		Comparator<HouseDetailsModel> rentComparator =
-                (house1, house2) -> house1.getHouseRent().compareTo(house2.getHouseRent());
+			List<HouseDetailsModel> houses = houseDetailsRepo.findAll();
+			String startprice, endprice;
+			int sp, ep;
+			startprice = price.split("to")[0];
+			System.out.println("-------------" + startprice);
+			endprice = price.split("to")[1];
+			sp = Integer.parseInt(startprice);
+			ep = Integer.parseInt(endprice);
+		List<HouseDetailsModel> advnaceFilteredHouses = houses.stream().filter(
+					house -> Integer.parseInt(house.getHouseRent()) >= sp && Integer.parseInt(house.getHouseRent()) <= ep).collect(Collectors.toList());
+
+			Comparator<HouseDetailsModel> rentComparator =
+					(house1, house2) -> house1.getHouseRent().compareTo(house2.getHouseRent());
 		return advnaceFilteredHouses.stream().sorted(rentComparator).collect(Collectors.toList());
 
 	}
 
-	public void reserveHouse(Long houseId, Long userId) {
+	public int reserveHouse(Long houseId, Long userId) {
 		// TODO Auto-generated method stub
+		try {
+			ReserveModel reserve = new ReserveModel();
 
-		ReserveModel reserve = new ReserveModel();
+			reserve.setHouseId(houseId);
+			reserve.setUserId(userId);
 
-		reserve.setHouseId(houseId);
-		reserve.setUserId(userId);
+			HousePropertiesModel houseProperty = housePropertiesRepo.findHouseProperties(houseId);
 
-		HousePropertiesModel houseProperty = housePropertiesRepo.findHouseProperties(houseId);
+			houseProperty.setIsHide("1");
+			housePropertiesRepo.save(houseProperty);
 
-		houseProperty.setIsHide("1");
-		housePropertiesRepo.save(houseProperty);
+			HouseStatusModel houseStatus = houseStatusRepo.findHouseStatus(houseId);
 
-		HouseStatusModel houseStatus = houseStatusRepo.findHouseStatus(houseId);
+			houseStatus.setIsHide("1");
+			houseStatusRepo.save(houseStatus);
+		}
+		catch (Exception e){
+			return 0;
+		}
 
-		houseStatus.setIsHide("1");
-		houseStatusRepo.save(houseStatus);
-
-
+		return 1;
 	}
 
-	public void saveReviewProperty(ReviewPropertyModel property) {
+	public int saveReviewProperty(ReviewPropertyModel property) {
 		// TODO Auto-generated method stub
-
-		reviewPropertyRepo.save(property);
-
+        try {
+			reviewPropertyRepo.save(property);
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+		return 1;
 	}
 
 	public List<HouseDetailsModel> findAllFavs(Long id) {
 		// TODO Auto-generated method stub
+		List<HouseDetailsModel> houseDetails;
+        try {
+			List<FavouritesModel> favs = favouritesRepo.findUserFavs(id);
+			houseDetails = new ArrayList<HouseDetailsModel>();
 
-		List<FavouritesModel> favs = favouritesRepo.findUserFavs(id);
-		List<HouseDetailsModel> houseDetails = new ArrayList<HouseDetailsModel>();
-
-		favs.forEach(fav -> {
-			houseDetails.add(houseDetailsRepo.findHouseDetails(Long.parseLong(fav.getHouseId())));
-		});
+			favs.forEach(fav -> {
+				houseDetails.add(houseDetailsRepo.findHouseDetails(Long.parseLong(fav.getHouseId())));
+			});
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 
 		return houseDetails;
 	}
 
 	public List<BookModel> getAllBookingsByUserId(Long id) {
 		// TODO Auto-generated method stub
-		return bookRepo.getAllBookingsOfUser(id);
+		List<BookModel> bookModels;
+		try {
+			bookModels = bookRepo.getAllBookingsOfUser(id);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return bookModels;
 	}
 
 	public int getIsLikedByUser(Long houseId, Long userId) {
