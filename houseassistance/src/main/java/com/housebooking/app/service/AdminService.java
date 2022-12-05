@@ -213,22 +213,35 @@ public class AdminService {
 	}
 
 	public List<HouseDocumentModel> getAllNotVerifiedHouses() {
-List<HouseDocumentModel> houseDocs = new ArrayList<HouseDocumentModel>();
+		List<HouseDocumentModel>  houseDocs = new ArrayList<HouseDocumentModel>();
+		try {
+			List<HouseStatusModel> houseStatus = houseStatusRepo.findAll();
 
-		List<HouseStatusModel> houseStatus = houseStatusRepo.findAll();
-
-		houseStatus.forEach(status -> {
-			if(status.getIsVerified().equals("0")) {
-				houseDocs.add(houseDocsRepo.findHouseDocument(status.getId()));
-			}
-		});
+			houseStatus.forEach(status -> {
+				if (status.getIsVerified().equals("0")) {
+					houseDocs.add(houseDocsRepo.findHouseDocument(status.getId()));
+				}
+			});
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 
 		return houseDocs;
 	}
 
 	public HouseDocumentModel getHouseDocument(Long id) {
 		// TODO Auto-generated method stub
-		return houseDocsRepo.findHouseDocument(id);
+		HouseDocumentModel houseDocumentModel;
+		try {
+			houseDocumentModel = houseDocsRepo.findHouseDocument(id);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return  houseDocumentModel;
 	}
 
 	public int verifyHouse(Long id) {

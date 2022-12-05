@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
+import com.housebooking.app.utils.TestUtils;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -411,5 +412,48 @@ public class AdminServiceTest {
 
         int result = adminService.verifyHouse(3l);
         assertEquals(0,result);
+    }
+
+    @Test
+    public void getHouseDocument_Test()
+    {
+        when(houseDocsRepo.findHouseDocument(any())).thenReturn(TestUtils.getHouseDocumentModel());
+        HouseDocumentModel houseDocumentModel = adminService.getHouseDocument(123L);
+        assertEquals(TestUtils.getHouseDocumentModel(),houseDocumentModel);
+    }
+
+    @Test
+    public void getHouseDocument_negativeTest()
+    {
+        when(houseDocsRepo.findHouseDocument(any())).thenThrow(NullPointerException.class);
+        HouseDocumentModel houseDocumentModel = adminService.getHouseDocument(123L);
+        assertEquals(null,houseDocumentModel);
+    }
+
+    @Test
+    public  void getAllNotVerifiedHouses_Test()
+    {
+        List<HouseDocumentModel>  houseDocs = new ArrayList<HouseDocumentModel>();
+        houseDocs.add(TestUtils.getHouseDocumentModel());
+        List<HouseStatusModel> houseStatusModels = new ArrayList<>();
+        houseStatusModels.add(TestUtils.getHouseStatusModel());
+        when(houseStatusRepo.findAll()).thenReturn(houseStatusModels);
+        when(houseDocsRepo.findHouseDocument(any())).thenReturn(TestUtils.getHouseDocumentModel());
+        List<HouseDocumentModel>  houseDocumentModelsResult = adminService.getAllNotVerifiedHouses();
+        assertEquals(houseDocs,houseDocumentModelsResult);
+
+    }
+
+    @Test
+    public  void getAllNotVerifiedHouses_negativeTest()
+    {
+        List<HouseDocumentModel>  houseDocs = new ArrayList<HouseDocumentModel>();
+        houseDocs.add(TestUtils.getHouseDocumentModel());
+        List<HouseStatusModel> houseStatusModels = new ArrayList<>();
+        houseStatusModels.add(TestUtils.getHouseStatusModel());
+        when(houseStatusRepo.findAll()).thenThrow(NullPointerException.class);
+        List<HouseDocumentModel>  houseDocumentModelsResult = adminService.getAllNotVerifiedHouses();
+        assertEquals(null,houseDocumentModelsResult);
+
     }
 }
